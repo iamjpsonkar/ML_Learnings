@@ -153,6 +153,7 @@ X_test[:,3:] = sc.transform(X_test[:,3:])
 In simple linear regression, we simply predict value based on an equation
 $$ y = b_{0} \ \ + \ \ b_{1}x $$
 In above equation, y will depend on the values of x, so we can predict/calculate value of y, if value of x is already known.
+
 > ### Loading new Dataset
 
 ```python
@@ -216,5 +217,124 @@ for i in range(n):
     ar=[[0 for _ in range(i)]+[1]+[0 for _ in range(i+1,n)]]
     b=regressor.predict(ar)
     eq+=" + {}*x{}".format(b[0],i+1)
+print(eq)
+```
+> # Multiple Linear Regression
+If there are multiple variables inside Linear Regression Equation, it is known as Multiple Linear Regression
+Let's see equation
+$$ y = b_{0} \ \ + \ \ b_{1}x_{1}  \ \ + \ \ b_{2}x_{2}  \ \ + \ \ b_{3}x_{3} \ \ + \ \ ... \ \ + \ \ b_{n}x_{n} $$
+Now y will depend on multiple values, we can still predict/calculate value of y, if we have the equation and the values of the X.
+
+## Assumptions of Linear Regression
+There are 5 assumptions
+1. Linearity
+2. Homoscedasticity
+3. Multivariate Normality
+4. Independence of Errors
+5. Lack of Multicollinearity
+
+## Hypothesis Testing (P-Value)
+Supose you have a coin, and you are tossing it continiously
+1. got HEAD, its probability is 0.5
+2. got again HEAD, its probability is 0.25
+3. got again HEAD, its probability is 0.12
+4. got again HEAD, its probability is 0.06
+
+If you get get HEAD again (probability 0.03), coin is suspicous. you may think coin is not a fair coin.\
+The point/percent at which you become suspicious is known as **Significance Value**.\
+Initially we assume coin is fair, but when the significance value is reached, we correct our assumption (Hypothesis) and confirm that it is not a fair coin, this is known as **Null Hypothesis Testing**.
+
+## Building a Multiple Linear Regression Model
+There are 5 ways to build Multiple Linear Regression Model
+1. All In
+:  Select all the columns
+    - You have prior knowledge
+    - You have to select all columns
+    - You are preparing for backward elimination
+2. Backward Elimination (Fastest)
+    1. Select a Significance Level to stay in the model (SL=0.05)
+    2. Fit the model with all columns/predictor
+    3. Select the column/predictor with highest P-Value, if P-Value > SL goto step 4, else go to FINISH
+    4. Remove the predictor
+    5. Fit the model again, and go to step 3
+3. Forward Selection
+    1. Select a Significance Level to Enter in the model (SL=0.05)
+    2. Fit the model with all predictors seperately
+    3. Select the predictor with lowest P-value, if P-value < SL goto step 4, else FINISH and keep the last model
+    4. Fit the model, using all the remaining predictors separately and with this one extra combination
+4. Bidirection Elemination
+    1. Select a Significance Level to stay in the model (STAY_SL=0.05) and a Significance Level to Enter in the model (ENTER_SL=0.05)
+    2. Perform next step of Forward Selection
+    3. Perform all step of Backward Elimination
+    4. When no new predictors enter and no old predictors can exit, FINISH
+5. Score Comparision
+    1. Select a criterion of goodness (Score)
+    2. Construct all possible regression model (2<sup>N</sup>-1)
+    3. Select the best model using goodness criterion
+    4. FINISH
+
+Step-wise Regression
+- Backward Elimination
+- Forward Selection
+- Bidirection Elemination
+
+## Loading Data and preprocessing it
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+dataset = pd.read_csv('../Datasets/Regression/Multiple_Linear_Regression/50_Startups.csv')
+# print(dataset)
+
+X = dataset.iloc[:,:-1].values
+y = dataset.iloc[:,-1].values
+
+# Taking care of Missing values
+from sklearn.impute import SimpleImputer 
+imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+imputer.fit(X[:,:-1])
+X[:,:-1] =  imputer.transform(X[:,:-1])
+imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+imputer.fit(X[:,-2:-1])
+X[:,-2:-1] =  imputer.transform(X[:,-2:-1])
+# print(X)
+
+# Encoding categorial Data [One Hot Encoding]
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+ct = ColumnTransformer(transformers=[('encode',OneHotEncoder(),[-1])], remainder='passthrough')
+X = np.array(ct.fit_transform(X))
+# print(X)
+
+# Splitting dataset into train and test set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+```
+## Training the Linear Regression Model on the training set
+```python
+from sklearn.linear_model import LinearRegression
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+```
+
+## Predicting the result for test set result
+```python
+y_pred = regressor.predict(X_test)
+```
+
+## Visualising the predicted and actual results
+```python
+np.set_printoptions(precision=2)
+print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
+```
+
+## Computing the equation of model
+```python
+n = len(X_train[0])
+b0=regressor.predict([[0 for _ in range(n)]])
+eq="y = {}".format(b0[0])
+for i in range(n):
+    eq+=" + {}*x{}".format(regressor.predict([[0 for _ in range(i)]+[1]+[0 for _ in range(i+1,n)]])[0],i+1)
 print(eq)
 ```
