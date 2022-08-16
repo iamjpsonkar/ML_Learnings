@@ -338,3 +338,119 @@ for i in range(n):
     eq+=" + {}*x{}".format(regressor.predict([[0 for _ in range(i)]+[1]+[0 for _ in range(i+1,n)]])[0],i+1)
 print(eq)
 ```
+
+> # Polynomial Regression
+If the power raise to variable is not only 1, but may have different powers of the variable x, it is known as Polynomial Regression.
+Let's see the equation
+$$ y = b_{0} \ \ + \ \ b_{1}x^{1}  \ \ + \ \ b_{2}x^{2}  \ \ + \ \ b_{3}x^{3} \ \ + \ \ ... \ \ + \ \ b_{n}x^{n} $$
+Now y will depend on multiple powers of the x, we can still predict/calculate value of y, if we have the equation and the value of the x.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+dataset = pd.read_csv('../Datasets/Regression/Polynomial_Regression/Position_Salaries.csv')
+# print(dataset)
+
+X = dataset.iloc[:,1:-1].values
+y = dataset.iloc[:,-1].values
+
+print(X)
+print(y)
+
+# Taking care of Missing values
+# from sklearn.impute import SimpleImputer 
+# imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+# imputer.fit(X[:,:-1])
+# X[:,:-1] =  imputer.transform(X[:,:-1])
+# imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+# imputer.fit(X[:,-2:-1])
+# X[:,-2:-1] =  imputer.transform(X[:,-2:-1])
+# print(X)
+
+# Encoding categorial Data [One Hot Encoding]
+# from sklearn.compose import ColumnTransformer
+# from sklearn.preprocessing import OneHotEncoder
+# ct = ColumnTransformer(transformers=[('encode',OneHotEncoder(),[-1])], remainder='passthrough')
+# X = np.array(ct.fit_transform(X))
+# # print(X)
+
+# # Splitting dataset into train and test set
+# from sklearn.model_selection import train_test_split
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+```
+
+## Training the linear regression model on whole dataset
+```python
+from sklearn.linear_model import LinearRegression
+lin_reg_1 =  LinearRegression()
+lin_reg_1.fit(X,y)
+```
+
+## Training the polynomial regression model on whole dataset [n=2]
+```python
+from sklearn.preprocessing  import PolynomialFeatures
+poly_fet = PolynomialFeatures(degree=2)
+poly_X = poly_fet.fit_transform(X)
+lin_reg_2 = LinearRegression()
+lin_reg_2.fit(poly_X,y)
+```
+
+## Visualising the Linear Regression result
+```python
+plt.scatter(X,y,color='red')
+plt.plot(X,lin_reg_1.predict(X),color='blue')
+plt.title('Truth or Bluff (Linear Regression Model)')
+plt.show()
+```
+
+## Visualising the Polynomial Regression result
+```python
+plt.scatter(X,y,color='red')
+plt.plot(X,lin_reg_2.predict(poly_X),color='blue')
+plt.title('Truth or Bluff (Polynomial Regression Model) n=2')
+plt.show()
+```
+
+## Training the polynomial regression model on whole dataset [n=4]
+```python
+from sklearn.preprocessing  import PolynomialFeatures
+poly_fet = PolynomialFeatures(degree=4)
+poly_X = poly_fet.fit_transform(X)
+lin_reg_2 = LinearRegression()
+lin_reg_2.fit(poly_X,y)
+```
+
+## Visualising the Polynomial Regression result
+```python
+plt.scatter(X,y,color='red')
+plt.plot(X,lin_reg_2.predict(poly_X),color='blue')
+plt.title('Truth or Bluff (Polynomial Regression Model) n=4')
+plt.show()
+```
+
+## Visualising the Polynomial Regression result with higher resolution and smoother curve
+```python
+from sklearn.preprocessing  import PolynomialFeatures
+
+poly_fet = PolynomialFeatures(degree=4)
+poly_X = poly_fet.fit_transform(X)
+lin_reg_2 = LinearRegression()
+lin_reg_2.fit(poly_X,y)
+X_grid = np.arange(min(X),max(X),0.1)
+X_grid = X_grid.reshape((len(X_grid),1))
+plt.scatter(X,y,color='red')
+plt.plot(X_grid,lin_reg_2.predict(poly_fet.fit_transform(X_grid)),color='blue')
+plt.title('Truth or Bluff (Polynomial Regression Model) n=4, smooth curve')
+plt.show()
+```
+
+## Predicting a new result using Linear Model
+```python
+lin_reg_1.predict([[6.5]])
+```
+## Predicting a new result using Polynomial Model
+```python
+lin_reg_2.predict(poly_fet.fit_transform([[6.5]]))
+```
