@@ -629,3 +629,79 @@ plt.plot(X_grid,regressor.predict(X_grid),color='blue')
 plt.title('Truth or Bluff (Decision Tree Regression Model) smooth curve')
 plt.show()
 ```
+
+## Random Forest Regression [Ensemble Learning]
+
+### Steps/Procedure
+1. Pick a number K, and select K random Data Points from the dataset
+2. Build a Decision Tree associated with these K points
+3. Pick a random[large] number N and build N Decision Tree using Step 1 and Step 2.
+4. To predict for a test, First predict using all the N Decision Trees as y<sub>1</sub>, y<sub>2</sub>, y<sub>3</sub>, ... , y<sub>N</sub>.
+5. Now take the average of the N values
+
+## Load and preprocess Dataset
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+dataset = pd.read_csv('../Datasets/Regression/Random_Forest_Regression/Position_Salaries.csv')
+# print(dataset)
+
+X = dataset.iloc[:,1:-1].values
+y = dataset.iloc[:,-1].values
+
+print(X)
+print(y)
+
+# Taking care of Missing values
+# from sklearn.impute import SimpleImputer 
+# imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+# imputer.fit(X[:,:-1])
+# X[:,:-1] =  imputer.transform(X[:,:-1])
+# imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+# imputer.fit(X[:,-2:-1])
+# X[:,-2:-1] =  imputer.transform(X[:,-2:-1])
+# print(X)
+
+# Encoding categorial Data [One Hot Encoding]
+# from sklearn.compose import ColumnTransformer
+# from sklearn.preprocessing import OneHotEncoder
+# ct = ColumnTransformer(transformers=[('encode',OneHotEncoder(),[-1])], remainder='passthrough')
+# X = np.array(ct.fit_transform(X))
+# # print(X)
+
+# # Splitting dataset into train and test set
+# from sklearn.model_selection import train_test_split
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+```
+
+### Train the Random Forest Regression Model using whole dataset
+```python
+from sklearn.ensemble import RandomForestRegressor
+regressor = RandomForestRegressor(n_estimators=10, random_state=0)
+regressor.fit(X,y)
+```
+
+### Predict the result for a new test
+```python
+regressor.predict([[6.5]])
+```
+
+### Visualisation of the Random Forest Regression Model
+```python
+plt.scatter(X,y,color='red')
+plt.plot(X,regressor.predict(X),color='blue')
+plt.title('Truth or Bluff (Random Forest Regression Model) smooth curve')
+plt.show()
+```
+
+### Visualisation of the Random Forest Regression Model [High Resolution]
+```python
+X_grid = np.arange(min(X),max(X),0.1)
+X_grid = X_grid.reshape((len(X_grid),1))
+plt.scatter(X,y,color='red')
+plt.plot(X_grid,regressor.predict(X_grid),color='blue')
+plt.title('Truth or Bluff (Random Forest Regression Model) smooth curve')
+plt.show()
+```
