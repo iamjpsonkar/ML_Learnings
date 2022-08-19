@@ -223,7 +223,7 @@ print(eq)
 If there are multiple variables inside Linear Regression Equation, it is known as Multiple Linear Regression
 Let's see equation
 
-$$ y = b_{0} \ \ + \ \ b_{1}x_{1}  \ \ + \ \ b_{2}x_{2}  \ \ + \ \ b_{3}x_{3} \ \ + \ \ ... \ \ + \ \ b_{n}x_{n} $$
+$$y = b_{0} \ \ + \ \ b_{1}x_{1}  \ \ + \ \ b_{2}x_{2}  \ \ + \ \ b_{3}x_{3} \ \ + \ \ ... \ \ + \ \ b_{n}x_{n}$$
 
 Now y will depend on multiple values, we can still predict/calculate value of y, if we have the equation and the values of the X.
 
@@ -344,7 +344,7 @@ print(eq)
 > # Polynomial Regression
 If the power raise to variable is not only 1, but may have different powers of the variable x, it is known as Polynomial Regression.
 Let's see the equation
-$$ y = b_{0} \ \ + \ \ b_{1}x^{1}  \ \ + \ \ b_{2}x^{2}  \ \ + \ \ b_{3}x^{3} \ \ + \ \ ... \ \ + \ \ b_{n}x^{n} $$
+$$y = b_{0} \ \ + \ \ b_{1}x^{1}  \ \ + \ \ b_{2}x^{2}  \ \ + \ \ b_{3}x^{3} \ \ + \ \ ... \ \ + \ \ b_{n}x^{n}$$
 Now y will depend on multiple powers of the x, we can still predict/calculate value of y, if we have the equation and the value of the x.
 
 ```python
@@ -548,5 +548,84 @@ X_grid = X_grid.reshape((len(X_grid),1))
 plt.scatter(sc_X.inverse_transform(X),sc_y.inverse_transform(y),color='red')
 plt.plot(X_grid,sc_y.inverse_transform(regressor.predict(sc_X.transform(X_grid)).reshape(len(X_grid),1)),color='blue')
 plt.title('Truth or Bluff (Support Vector Regression Model) smooth curve')
+plt.show()
+```
+
+## Decision Tree Regression
+In this we add some check [like if else] and based in the condition we predict the value\
+**predict value of z, when values of x and y are given**
+```python
+if x < 20:
+    if y < 200:
+        z = 300.5
+    else:
+        z = 65.7
+else:
+    if y < 170:
+        if x < 40:
+            z = -64.1
+        else:
+            z = 0.7
+    else:
+        z = 1023
+```
+Basically we split our Dataset graph in various section, and for every new point we find the section in which new data lies, and then for prediction we just take average of that section.
+
+### Load and preprocess the data
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+dataset = pd.read_csv('../Datasets/Regression/Decision_Tree_Regression/Position_Salaries.csv')
+# print(dataset)
+
+X = dataset.iloc[:,1:-1].values
+y = dataset.iloc[:,-1].values
+
+print(X)
+print(y)
+
+# Taking care of Missing values
+# from sklearn.impute import SimpleImputer 
+# imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+# imputer.fit(X[:,:-1])
+# X[:,:-1] =  imputer.transform(X[:,:-1])
+# imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+# imputer.fit(X[:,-2:-1])
+# X[:,-2:-1] =  imputer.transform(X[:,-2:-1])
+# print(X)
+
+# Encoding categorial Data [One Hot Encoding]
+# from sklearn.compose import ColumnTransformer
+# from sklearn.preprocessing import OneHotEncoder
+# ct = ColumnTransformer(transformers=[('encode',OneHotEncoder(),[-1])], remainder='passthrough')
+# X = np.array(ct.fit_transform(X))
+# # print(X)
+
+# # Splitting dataset into train and test set
+# from sklearn.model_selection import train_test_split
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+```
+
+### Training the Decision Tree Regression model on the whole dataset
+```python
+from sklearn.tree import DecisionTreeRegressor
+regressor = DecisionTreeRegressor(random_state=0)
+regressor.fit(X,y)
+```
+
+### Predicting the value for new test using Decision Tree Regressor
+```python
+regressor.predict([[6.5]])
+```
+
+### Visualising the Decision Tree Regression model [High Resolution]
+```python
+X_grid = np.arange(min(X),max(X),0.1)
+X_grid = X_grid.reshape((len(X_grid),1))
+plt.scatter(X,y,color='red')
+plt.plot(X_grid,regressor.predict(X_grid),color='blue')
+plt.title('Truth or Bluff (Decision Tree Regression Model) smooth curve')
 plt.show()
 ```
