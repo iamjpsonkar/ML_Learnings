@@ -456,3 +456,97 @@ lin_reg_1.predict([[6.5]])
 ```python
 lin_reg_2.predict(poly_fet.fit_transform([[6.5]]))
 ```
+
+> ## Support Vector Regression [SVR]
+In this regression, instead of a regression line, a hyperplane is used.\
+Points lying insdie/on the hyperplane are allowed errors, Points lying outside the hyperplane are known as support vector,\
+Hence this is known as **Support Vector Regression [SVR]**
+
+### Loading Data and preprocessing it
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+dataset = pd.read_csv('../Datasets/Regression/Support_Vector_Regression/Position_Salaries.csv')
+# print(dataset)
+
+X = dataset.iloc[:,1:-1].values
+y = dataset.iloc[:,-1].values
+
+print(X)
+print(y)
+
+# Taking care of Missing values
+# from sklearn.impute import SimpleImputer 
+# imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+# imputer.fit(X[:,:-1])
+# X[:,:-1] =  imputer.transform(X[:,:-1])
+# imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+# imputer.fit(X[:,-2:-1])
+# X[:,-2:-1] =  imputer.transform(X[:,-2:-1])
+# print(X)
+
+# Encoding categorial Data [One Hot Encoding]
+# from sklearn.compose import ColumnTransformer
+# from sklearn.preprocessing import OneHotEncoder
+# ct = ColumnTransformer(transformers=[('encode',OneHotEncoder(),[-1])], remainder='passthrough')
+# X = np.array(ct.fit_transform(X))
+# # print(X)
+
+# # Splitting dataset into train and test set
+# from sklearn.model_selection import train_test_split
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+```
+
+### Feature Scaling
+```python
+from sklearn.preprocessing import StandardScaler
+
+sc_X = StandardScaler()
+sc_X.fit(X)
+X = sc_X.transform(X)
+
+# reshape y
+y = y.reshape((len(y),1))
+
+sc_y = StandardScaler()
+sc_y.fit(y)
+y = sc_y.transform(y)
+
+print(X)
+print(y)
+```
+
+### Training the SVR model on the whole dataset
+```python
+from sklearn.svm import SVR
+regressor =  SVR(kernel='rbf')
+regressor.fit(X,y.ravel())
+```
+
+### Predict the salary for new test case
+```python
+y_pred = regressor.predict(sc_X.transform([[6.5]]))
+print(y_pred)
+y_pred = sc_y.inverse_transform(y_pred.reshape(1,1))
+print(y_pred)
+```
+
+### Visualising the SVR model
+```python
+plt.scatter(sc_X.inverse_transform(X),sc_y.inverse_transform(y),color='red')
+plt.plot(sc_X.inverse_transform(X),sc_y.inverse_transform(regressor.predict(X).reshape(len(y),1)),color='blue')
+plt.title('Truth or Bluff (Support Vector Regression Model)')
+plt.show()
+```
+
+### Visualising the SVR model in High Resolution
+```python
+X_grid = np.arange(min(sc_X.inverse_transform(X)),max(sc_X.inverse_transform(X)),0.1)
+X_grid = X_grid.reshape((len(X_grid),1))
+plt.scatter(sc_X.inverse_transform(X),sc_y.inverse_transform(y),color='red')
+plt.plot(X_grid,sc_y.inverse_transform(regressor.predict(sc_X.transform(X_grid)).reshape(len(X_grid),1)),color='blue')
+plt.title('Truth or Bluff (Support Vector Regression Model) smooth curve')
+plt.show()
+```
