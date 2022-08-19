@@ -222,7 +222,9 @@ print(eq)
 > # Multiple Linear Regression
 If there are multiple variables inside Linear Regression Equation, it is known as Multiple Linear Regression
 Let's see equation
+
 $$ y = b_{0} \ \ + \ \ b_{1}x_{1}  \ \ + \ \ b_{2}x_{2}  \ \ + \ \ b_{3}x_{3} \ \ + \ \ ... \ \ + \ \ b_{n}x_{n} $$
+
 Now y will depend on multiple values, we can still predict/calculate value of y, if we have the equation and the values of the X.
 
 ## Assumptions of Linear Regression
