@@ -705,3 +705,26 @@ plt.plot(X_grid,regressor.predict(X_grid),color='blue')
 plt.title('Truth or Bluff (Random Forest Regression Model) smooth curve')
 plt.show()
 ```
+
+## R-Square method to comare the models
+Suppose the points on the regression line are
+$$ Y = mx + C $$
+$$ RY_{1}, RY_{2}, RY_{3}, ... ,RY_{n}$$
+Now lets Assume Y<sub>Avg</sub> is average of all given y points, and the equation for average prediction regression is
+$$ Y = Y_{Avg} $$
+
+### Squared Sum of Residuals 
+$$ SS_{res} = \sum_{i=1}^{n} (Y_{i}-RY_{i})^2$$
+
+### Squared Sum Total
+$$ SS_{tot} = \sum_{i=1}^{n} (Y_{i}-Y_{Avg})^2$$
+
+### R-Square
+$$ R^2 = 1 - \frac{SS_{res}}{SS_{tot}}$$
+**If value of  R<sup>2</sup> is nearer to 1, model is good.**
+
+## Adjusted R<sup>2</sup>
+It is observed that, whenever you add a new independent variable in regression equation, SS<sub>res</sub> is either going to increase or be the same, So R<sup>2</sup> will always increase, hence this method will not help in case of adding a new variable in regression, Now
+$$ R^2_{adj} = 1 - (1-R^2) \frac{n-1}{n-p-1}$$
+n - Sample Size<br/> 
+p - No of Independent variable used in regression
