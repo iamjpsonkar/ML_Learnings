@@ -728,3 +728,126 @@ It is observed that, whenever you add a new independent variable in regression e
 $$ R^2_{adj} = 1 - (1-R^2) \frac{n-1}{n-p-1}$$
 n - Sample Size<br/> 
 p - No of Independent variable used in regression
+
+<br/>
+<hr/>
+<br/>
+
+> ## Regression Model Selection [ Comparing and finding best regresssion Model]
+### Load and preprocess Dataset
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+dataset = pd.read_csv('../Datasets/Regression/Model_Selection_Regression/Data.csv')
+# print(dataset)
+
+X = dataset.iloc[:,:-1].values
+y = dataset.iloc[:,-1].values
+
+print(X)
+print(y)
+
+# Taking care of Missing values
+# from sklearn.impute import SimpleImputer 
+# imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+# imputer.fit(X[:,:-1])
+# X[:,:-1] =  imputer.transform(X[:,:-1])
+# imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+# imputer.fit(X[:,-2:-1])
+# X[:,-2:-1] =  imputer.transform(X[:,-2:-1])
+# print(X)
+
+# Encoding categorial Data [One Hot Encoding]
+# from sklearn.compose import ColumnTransformer
+# from sklearn.preprocessing import OneHotEncoder
+# ct = ColumnTransformer(transformers=[('encode',OneHotEncoder(),[-1])], remainder='passthrough')
+# X = np.array(ct.fit_transform(X))
+# # print(X)
+
+# Splitting dataset into train and test set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+```
+
+### Prediction using Multiple Linear Regression
+```python
+from sklearn.linear_model import LinearRegression
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+y_pred_MLR = regressor.predict(X_test)
+print(y_pred_MLR)
+```
+
+### Prediction using Polynomial Regression
+```python
+from sklearn.preprocessing  import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+poly_fet = PolynomialFeatures(degree=4)
+poly_X = poly_fet.fit_transform(X_train)
+poly_reg =  LinearRegression()
+poly_reg.fit(poly_X,y_train)
+y_pred_PR = poly_reg.predict(poly_fet.fit_transform(X_test))
+print(y_pred_PR)
+```
+
+### Prediction using Support Vector Regression
+```python
+from sklearn.preprocessing import StandardScaler
+
+sc_X = StandardScaler()
+sc_X.fit(X_train)
+X_sc = sc_X.transform(X_train)
+
+# reshape y
+y_sc = y_train.reshape((len(y_train),1))
+
+sc_y = StandardScaler()
+sc_y.fit(y_sc)
+y_sc = sc_y.transform(y_sc)
+
+# print(X_sc)
+# print(y_sc)
+
+from sklearn.svm import SVR
+regressor =  SVR(kernel='rbf')
+regressor.fit(X_sc,y_sc.ravel())
+
+y_pred_SVR = regressor.predict(sc_X.transform(X_test))
+print(y_pred_SVR)
+y_pred_SVR = sc_y.inverse_transform(y_pred_SVR.reshape(len(y_pred_SVR),1)).ravel()
+print(y_pred_SVR)
+```
+
+### Prediction using Decision Tree Regression
+```python
+from sklearn.tree import DecisionTreeRegressor
+regressor = DecisionTreeRegressor(random_state=0)
+regressor.fit(X_train,y_train)
+y_pred_DTR = regressor.predict(X_test)
+print(y_pred_DTR)
+```
+
+### Prediction using Random Forest Regression
+```python
+from sklearn.ensemble import RandomForestRegressor
+regressor = RandomForestRegressor(n_estimators=10, random_state=0)
+regressor.fit(X_train,y_train)
+y_pred_RFR = regressor.predict(X_test)
+print(y_pred_RFR)
+```
+
+## R-Square Comparision for All model
+```python
+from sklearn.metrics import r2_score
+R2S = {}
+R2S['Multiple Linear Regression'] = r2_score(y_test, y_pred_MLR)
+R2S['Polynomial Regression'] = r2_score(y_test, y_pred_PR)
+R2S['Support Vector Regression'] = r2_score(y_test, y_pred_SVR)
+R2S['Decision Tree Regression'] = r2_score(y_test, y_pred_DTR)
+R2S['Random Forest Regression'] = r2_score(y_test, y_pred_RFR)
+
+for method in R2S:
+    print(method,":",R2S[method])
+```
