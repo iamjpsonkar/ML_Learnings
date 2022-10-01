@@ -1262,3 +1262,200 @@ plt.ylabel('Estimated Salary')
 plt.legend()
 plt.show()
 ```
+
+<br/>
+<hr/>
+<br/>
+
+> ## Kernerl SVM
+In Data Science, we are mainly dealing with Datasets. Now Datasets can be divided into two categories
+- **Linearly Separable Data points**
+: These data points can be easily seperated in different class/category using any hyperplane
+- **Non Linearly Separable Data points**
+: These data points can't be seperated in different class/category using any hyperplane
+
+**Support Vector Machine [SVM]** can easily process datasets having **linearly separable datapoints** to predict classes/categories for new data points, but for **non linearly separable** data points SVM can't draw any hyperplane.
+
+There is a technique **Maping to a Higher Dimension** which can be used to draw a hyperplane between non linearly seperable data points. In this technique, dimension of datapoints is increased to a higher dimension by using some equations/transformation.
+Suppose we have two classes 1D datapoints
+- Class A : [2, 3, 4, 8, 9, 10]
+- Class B : [6, 7]
+
+If we apply below transformation and increase dimenstion from 1D -> 2D
+<br/>
+y = f(x)
+<br/>
+y = (x-5)<sup>2</sup>
+
+Now the resultant datapoints will be a hyperbola, and we can draw a line that will separate the Class A and Class B.
+
+Next, we can reproject our new datapoints in older dimension.
+
+>But, **Maping to a High Dimension can be a highly compute-intensive**
+
+<br/>
+
+### The Kernel Trick
+The Gaussian RBF Kernel
+
+$$ K\left ( \vec{x}, \vec{l^{i}} \right ) = e^{- \left ( \frac{\left \| \vec{x} -\vec{l^{i}} \right \|}{ 2\sigma ^{2}} \right )} $$
+
+$$ \vec{x} = Data \ Points $$
+
+$$ \vec{l^{i}} = Land \  Vector $$
+
+$$ \sigma = Radius \ of \ the \ Circle $$
+
+For every data points we have K<sub>1</sub>, K<sub>2</sub> , K<sub>3</sub> , K<sub>4</sub> , ... K<sub>n</sub>
+
+Based of the value of K<sub>i</sub>, we can decide class/category of any datapoint, without doing any high dimension computing.
+
+We also can have different combination of these K
+
+$$ K_{1}\left ( \vec{x}, \vec{l^{1}} \right ) + K_{2}\left ( \vec{x}, \vec{l^{2}} \right )  $$
+
+The above equation can predict for the **<span>&#8734;</span>** shape of data points 
+
+> ### Types of Kernel Function
+1. The Gaussian RBF Kernel
+$$ K\left ( \vec{x}, \vec{l^{i}} \right ) = e^{- \left ( \frac{\left \| \vec{x} -\vec{l^{i}} \right \|}{ 2\sigma ^{2}} \right )} $$
+
+2. The Sigmoid Kernel
+$$ K(X, Y) = \tanh (\gamma \cdot X^{T}Y + r) $$
+
+3. The Polynomial Kernel
+$$ K(X, Y) = (\gamma \cdot X^{T}Y + r)^{d}, \ \gamma > 0 $$
+
+<hr/>
+<img src="./Kernel_functions.pdf.png"/>
+<hr/>
+
+## Non Linear Kernel SVR
+<hr/>
+<img src="./Kernel_SVM/Non_Linear_SVR.png"/>
+<hr/>
+
+
+## Loading and Preprocession Data
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+dataset = pd.read_csv('../Datasets/Classification/Kernel_SVM/Social_Network_Ads.csv')
+# print(dataset)
+
+X = dataset.iloc[:,:-1].values
+y = dataset.iloc[:,-1].values
+
+
+# # Taking care of Missing values
+# from sklearn.impute import SimpleImputer 
+# imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+# imputer.fit(X[:,:-1])
+# X[:,:-1] =  imputer.transform(X[:,:-1])
+# imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+# imputer.fit(X[:,-2:-1])
+# X[:,-2:-1] =  imputer.transform(X[:,-2:-1])
+# # print(X)
+
+# # Encoding categorial Data [One Hot Encoding]
+# from sklearn.compose import ColumnTransformer
+# from sklearn.preprocessing import OneHotEncoder
+# ct = ColumnTransformer(transformers=[('encode',OneHotEncoder(),[-1])], remainder='passthrough')
+# X = np.array(ct.fit_transform(X))
+# # print(X)
+
+# Splitting dataset into train and test set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+print(X_train)
+print(y_train)
+print(X_test)
+print(y_test)
+```
+
+
+## Feature Scaling
+```python
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+# fit using training data
+sc.fit(X_train)
+# transform training data using the scaler
+X_train = sc.transform(X_train)
+# transform test data using the same scaler
+X_test = sc.transform(X_test)
+```
+
+
+## Training the Kernel SVM Model using Training Data
+```python
+from sklearn.svm import SVC
+classifier = SVC(kernel = 'rbf', random_state = 0)
+classifier.fit(X_train,y_train)
+```
+
+## Predicting a test resullt
+```python
+# predict a single test 
+classifier.predict(sc.transform([[30,87000]]))
+```
+
+## Predict Test results
+```python
+y_pred = classifier.predict(X_test)
+print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
+```
+
+## Making the Confusion Matrix
+```python
+from sklearn.metrics import confusion_matrix, accuracy_score
+cm = confusion_matrix(y_test,y_pred)
+print(cm)
+acs = accuracy_score(y_test,y_pred)
+print(acs)
+# Confusion Matrix
+# [
+#     [Correct-0,   Incorrect-1]
+#     [Incorrect-0, Correct-0]
+# ]
+```
+
+## Visualising the Training set results
+```python
+from matplotlib.colors import ListedColormap
+X_set, y_set = sc.inverse_transform(X_train), y_train
+X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 10, stop = X_set[:, 0].max() + 10, step = 5),
+                     np.arange(start = X_set[:, 1].min() - 1000, stop = X_set[:, 1].max() + 1000, step = 5))
+plt.contourf(X1, X2, classifier.predict(sc.transform(np.array([X1.ravel(), X2.ravel()]).T)).reshape(X1.shape),
+             alpha = 0.75, cmap = ListedColormap(('red', 'green')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1], c = ListedColormap(('red', 'green'))(i), label = j)
+plt.title('Kernel SVM (Training set)')
+plt.xlabel('Age')
+plt.ylabel('Estimated Salary')
+plt.legend()
+plt.show()
+```
+
+## Visualising the Test set results
+```python
+from matplotlib.colors import ListedColormap
+X_set, y_set = sc.inverse_transform(X_test), y_test
+X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 10, stop = X_set[:, 0].max() + 10, step = 5),
+                     np.arange(start = X_set[:, 1].min() - 1000, stop = X_set[:, 1].max() + 1000, step = 5))
+plt.contourf(X1, X2, classifier.predict(sc.transform(np.array([X1.ravel(), X2.ravel()]).T)).reshape(X1.shape),
+             alpha = 0.75, cmap = ListedColormap(('red', 'green')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1], c = ListedColormap(('red', 'green'))(i), label = j)
+plt.title('Kernel SVM (Test set)')
+plt.xlabel('Age')
+plt.ylabel('Estimated Salary')
+plt.legend()
+plt.show()
+```
