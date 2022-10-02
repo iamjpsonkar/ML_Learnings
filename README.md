@@ -151,7 +151,9 @@ X_test[:,3:] = sc.transform(X_test[:,3:])
 > # Simple Linear Regression
 ### Predicts continious numerical values
 In simple linear regression, we simply predict value based on an equation
+
 $$ y = b_{0} \ \ + \ \ b_{1}x $$
+
 In above equation, y will depend on the values of x, so we can predict/calculate value of y, if value of x is already known.
 
 > ### Loading new Dataset
@@ -709,23 +711,24 @@ plt.show()
 ## R-Square method to comare the models
 Suppose the points on the regression line are
 $$ Y = mx + C $$
-$$ RY_{1}, RY_{2}, RY_{3}, ... ,RY_{n}$$
+$$ RY_{1}, RY_{2}, RY_{3}, ... ,RY_{n} $$
 Now lets Assume Y<sub>Avg</sub> is average of all given y points, and the equation for average prediction regression is
 $$ Y = Y_{Avg} $$
 
 ### Squared Sum of Residuals 
-$$ SS_{res} = \sum_{i=1}^{n} (Y_{i}-RY_{i})^2$$
+$$ SS_{res} = \sum_{i=1}^{n} (Y_{i}-RY_{i})^2 $$
 
 ### Squared Sum Total
-$$ SS_{tot} = \sum_{i=1}^{n} (Y_{i}-Y_{Avg})^2$$
+$$ SS_{tot} = \sum_{i=1}^{n} (Y_{i}-Y_{Avg})^2 $$
 
 ### R-Square
-$$ R^2 = 1 - \frac{SS_{res}}{SS_{tot}}$$
+$$ R^2 = 1 - \frac{SS_{res}}{SS_{tot}} $$
+
 **If value of  R<sup>2</sup> is nearer to 1, model is good.**
 
 ## Adjusted R<sup>2</sup>
 It is observed that, whenever you add a new independent variable in regression equation, SS<sub>res</sub> is either going to increase or be the same, So R<sup>2</sup> will always increase, hence this method will not help in case of adding a new variable in regression, Now
-$$ R^2_{adj} = 1 - (1-R^2) \frac{n-1}{n-p-1}$$
+$$ R^2_{adj} = 1 - (1-R^2) \frac{n-1}{n-p-1} $$
 n - Sample Size<br/> 
 p - No of Independent variable used in regression
 
@@ -1459,3 +1462,129 @@ plt.ylabel('Estimated Salary')
 plt.legend()
 plt.show()
 ```
+
+<hr/>
+<br/>
+
+> ## Naive Bayes
+<br/>
+
+### Bayes Theorem
+
+Let E1, E2,…, En be a set of events associated with a sample space S, where all the events E1, E2,…, En have nonzero probability of occurrence and they form a partition of S. Let A be any event associated with S, then according to Bayes theorem,
+
+$$ P(E_{i}\mid A) = \frac{P(E_{i}) \cdot P(A\mid E_{i})}{\sum_{k=1}^{n} P(E_{k}) \cdot P(A\mid E_{k}) } $$ 
+
+for any k = 1, 2, 3, … , n
+
+> Proof
+
+<pre>Probability of A given that B has occured</pre>
+$$ P(A \mid B) = \frac{P(A \cap B)}{P(B)}  \; \; \; \; \; \; \; \; \; \;...\; (1)$$
+<pre>Probability of A given that B has occured</pre>
+$$ P(B \mid A) = \frac{P(A \cap B)}{P(A)}  \; \; \; \; \; \; \; \; \; \;...\; (2)$$
+
+Now using (1) and (2)
+
+$$ P(A \mid B) \cdot P(B) = P(A \cap B) = P(B \mid A) \cdot P(A) $$
+
+$$ P(A \mid B) \cdot P(B) = P(B \mid A) \cdot P(A) $$
+
+>  $$ P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)} $$
+
+
+Example, 
+<br/>
+
+Let's have two machines M<sub>1</sub> and M<sub>2</sub>, that builds Bolts. 
+M<sub>1</sub> can built 30 Bolts and M<sub>2</sub> can build 20 Bolts per second respectively. 1% of the total bolts are defective, Also it was given that the chance of building defective bolts for each machine is 50%.
+
+Now,
+                    
+$$ P(M_{1})  =\  \frac{30}{20+30} =\  \frac{30}{50} =\  0.6 $$
+$$ P(M_{2})  =\  \frac{20}{20+30} =\  \frac{20}{50} =\  0.4 $$
+$$ P(Defected)  =\  0.01 $$
+$$ P(M_{1} \mid Defected)  =\  0.5 $$
+$$ P(M_{2} \mid Defected)  =\  0.5 $$
+
+<pre>P(Event A | Event B) means probability of Event A, if Event B is given </pre>
+
+Now, Given a bolt build by M<sub>1</sub>, what is the probability it is defected?
+
+Using Bayes Theorem
+
+$$ P(Defected \mid M_{1}) = \frac{P(M_{1} \mid Defected) \cdot P(Defected)}{P(M_{1} \mid Defected)+P(M_{1} \mid Not\ Defected)} $$
+
+<br/>
+
+$$ P(Defected \mid M_{1}) = \frac{P(M_{1} \mid Defected) \cdot P(Defected)}{P(M_{1})} $$
+
+<br/>
+
+$$ P(Defected \mid M_{1}) = \frac{0.01 * 0.5}{0.4} $$
+
+$$ P(Defected \mid M_{1}) = 0.0125 $$
+
+<br/>
+
+$$ P(Defected \mid M_{2}) = \frac{0.01 * 0.5}{0.6} $$
+
+$$ P(Defected \mid M_{2}) = 0.075 $$
+
+> ## Naive Bayes Classifier
+
+This classifier usages Bayes Theorem to predict the class of new data point
+
+>  $$ P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)} $$
+
+This Classification works in three step
+
+Step 1) Find the probability that new datapoint belongs to class A
+Step 2) Find the probability that new datapoint belongs to class B
+Step 3) Compare probabilities and predict the class of new data point.
+
+Given a set of datapoints, Red and Green. Find the class of new datapoint (Gray).
+<img src="./Naive_Bayes_Classifier/problem_statement.png">
+
+> **Step 1 : Calculate P(Walks|X)**
+
+<img src="./Naive_Bayes_Classifier/Step_1.1.png">
+
+**#1 P(Walks) [ Prior Probability ]**
+<img src="./Naive_Bayes_Classifier/Step_1.2.png">
+
+**#2 P(X|Walks) [ Likelihood ]**
+> Draw a circle around the new data point, **Observation Circle**
+
+<img src="./Naive_Bayes_Classifier/Step_1.3.png">
+
+**#3 P(X) [ Marginal Likelihood ]**
+<img src="./Naive_Bayes_Classifier/Step_1.4.png">
+
+**#4 P(Walks|X) [ Posterior Probability ]**
+<img src="./Naive_Bayes_Classifier/Step_1.5.png">
+
+> **Step 2 : Calculate P(Drives|X)**
+
+<img src="./Naive_Bayes_Classifier/Step_2.png">
+
+> **Step 3 : Compare P(Walks|X) and P(Drives|X)**
+<pre>
+P(Walks|X) v.s. P(Drives|X)
+0.75 v.s. 0.25
+0.75 > 0.25
+</pre>
+
+> **It means the new datapoint is going to Red Class**
+
+> In the Step 3
+
+$$ P(Walks \mid X) \; \; v.s. \; \; P(Drives \mid X) $$
+
+$$ \frac { P(X \mid Walks) \cdot P(Walks)} {P(X)} \; \; v.s. \; \; \frac { P(X \mid Drives) \cdot P(Drives)} {P(X)} $$
+
+P(X) can be discarded
+
+$$ \frac { P(X \mid Walks) \cdot P(Walks)} { \xcancel{P(X)} } \; \; v.s. \; \; \frac { P(X \mid Drives) \cdot P(Drives)} {\xcancel{P(X)} } $$
+
+> $$ P(X \mid Walks) \cdot P(Walks) \; \; v.s. \; \; P(X \mid Drives) \cdot P(Drives) $$
