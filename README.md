@@ -1588,3 +1588,128 @@ P(X) can be discarded
 $$ \frac { P(X \mid Walks) \cdot P(Walks)} { \xcancel{P(X)} } \; \; v.s. \; \; \frac { P(X \mid Drives) \cdot P(Drives)} {\xcancel{P(X)} } $$
 
 > $$ P(X \mid Walks) \cdot P(Walks) \; \; v.s. \; \; P(X \mid Drives) \cdot P(Drives) $$
+
+
+## Loading and Preprocession Data
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+dataset = pd.read_csv('../Datasets/Classification/Naive_Bayes_Classification/Social_Network_Ads.csv')
+# print(dataset)
+
+X = dataset.iloc[:,:-1].values
+y = dataset.iloc[:,-1].values
+
+
+# # Taking care of Missing values
+# from sklearn.impute import SimpleImputer 
+# imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+# imputer.fit(X[:,:-1])
+# X[:,:-1] =  imputer.transform(X[:,:-1])
+# imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+# imputer.fit(X[:,-2:-1])
+# X[:,-2:-1] =  imputer.transform(X[:,-2:-1])
+# # print(X)
+
+# # Encoding categorial Data [One Hot Encoding]
+# from sklearn.compose import ColumnTransformer
+# from sklearn.preprocessing import OneHotEncoder
+# ct = ColumnTransformer(transformers=[('encode',OneHotEncoder(),[-1])], remainder='passthrough')
+# X = np.array(ct.fit_transform(X))
+# # print(X)
+
+# Splitting dataset into train and test set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+print(X_train)
+print(y_train)
+print(X_test)
+print(y_test)
+```
+
+
+## Feature Scaling
+```python
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+# fit using training data
+sc.fit(X_train)
+# transform training data using the scaler
+X_train = sc.transform(X_train)
+# transform test data using the same scaler
+X_test = sc.transform(X_test)
+```
+
+
+## Training the Naive Bayes Classifier Model using Training Data
+```python
+from sklearn.naive_bayes import GaussianNB
+classifier = GaussianNB()
+classifier.fit(X_train,y_train)
+```
+
+## Predicting a test resullt
+```python
+# predict a single test 
+classifier.predict(sc.transform([[30,87000]]))
+```
+
+## Predict Test results
+```python
+y_pred = classifier.predict(X_test)
+print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
+```
+
+## Making the Confusion Matrix
+```python
+from sklearn.metrics import confusion_matrix, accuracy_score
+cm = confusion_matrix(y_test,y_pred)
+print(cm)
+acs = accuracy_score(y_test,y_pred)
+print(acs)
+# Confusion Matrix
+# [
+#     [Correct-0,   Incorrect-1]
+#     [Incorrect-0, Correct-0]
+# ]
+```
+
+## Visualising the Training set results
+```python
+from matplotlib.colors import ListedColormap
+X_set, y_set = sc.inverse_transform(X_train), y_train
+X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 10, stop = X_set[:, 0].max() + 10, step = 5),
+                     np.arange(start = X_set[:, 1].min() - 1000, stop = X_set[:, 1].max() + 1000, step = 5))
+plt.contourf(X1, X2, classifier.predict(sc.transform(np.array([X1.ravel(), X2.ravel()]).T)).reshape(X1.shape),
+             alpha = 0.75, cmap = ListedColormap(('red', 'green')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1], c = ListedColormap(('red', 'green'))(i), label = j)
+plt.title(' Naive Bayes Classifier  (Training set)')
+plt.xlabel('Age')
+plt.ylabel('Estimated Salary')
+plt.legend()
+plt.show()
+```
+
+## Visualising the Test set results
+```python
+from matplotlib.colors import ListedColormap
+X_set, y_set = sc.inverse_transform(X_test), y_test
+X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 10, stop = X_set[:, 0].max() + 10, step = 5),
+                     np.arange(start = X_set[:, 1].min() - 1000, stop = X_set[:, 1].max() + 1000, step = 5))
+plt.contourf(X1, X2, classifier.predict(sc.transform(np.array([X1.ravel(), X2.ravel()]).T)).reshape(X1.shape),
+             alpha = 0.75, cmap = ListedColormap(('red', 'green')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1], c = ListedColormap(('red', 'green'))(i), label = j)
+plt.title(' Naive Bayes Classifier  (Test set)')
+plt.xlabel('Age')
+plt.ylabel('Estimated Salary')
+plt.legend()
+plt.show()
+```
