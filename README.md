@@ -1327,7 +1327,7 @@ $$ K(X, Y) = \tanh (\gamma \cdot X^{T}Y + r) $$
 $$ K(X, Y) = (\gamma \cdot X^{T}Y + r)^{d}, \ \gamma > 0 $$
 
 <hr/>
-<img src="./Kernel_functions.pdf.png"/>
+<img src="./Kernel_SVM/Kernel_functions.pdf.png"/>
 <hr/>
 
 ## Non Linear Kernel SVR
