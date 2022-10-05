@@ -2152,3 +2152,68 @@ for score in Score:
 #     [Incorrect-0, Correct-0]
 # ]
 ```
+
+
+<br/>
+<hr/>
+<br/>
+
+# Evaluating Model Performances
+
+## False Positive and False Negative
+
+<img src="./Evaluating_Model_Performances/False_Positive_False_Negative.png"/>
+
+## Confusion Matrix
+
+<img src="./Evaluating_Model_Performances/Confusion_Matrix.png"/>
+
+
+## Accuracy Paradox
+
+<img src="./Evaluating_Model_Performances/Accuracy_Paradox_1.png"/>
+
+Now if in this scenario we only predict 0, means replace every 1 with 0 in prediction, the resultant accuracy rate will be
+
+<img src="./Evaluating_Model_Performances/Accuracy_Paradox_2.png"/>
+
+This is known as **Accuracy Paradox**, Accuracy rate shows that the accuracy of model is increased, but in actual it's getting vorse.
+
+## Cap Curve
+
+Suppose we have a list of customer data [Who purchased, who not purchased], according to data only 10% customer purchased the product.
+
+Now in the below diagram
+
+<img src="./Evaluating_Model_Performances/CAP_1.png"/>
+
+- Blue Line : Randomly sent advertisement/invitation to the all customer.
+- Green Line : Using some classification/regression algorithm, advertisement/invitation were sent to only those customer, who can purchase the product.
+- Red Line : Using best classification/regression model, advertisement/invitation were sent to only those customer, who can purchase the product.
+- Gray Line : If it was already known, who is goin to purchase the product, and advertisement/invitation is sent only those customers.
+
+
+<img src="./Evaluating_Model_Performances/CAP_2.png"/>
+
+## CAP Analysis
+
+Now using CAP curve
+<img src="./Evaluating_Model_Performances/CAP_Analysis_1.png"/>
+
+> ### a<sub>P</sub> : Area under the Random model and Perfect Model
+
+> ### a<sub>R</sub> : Area under the Random model and Good Model
+
+> $$ AR = \frac{a_{R}} {a_{P}} $$
+
+The above method to compute Accuracy Rate, is very complex because finding area under the curve is a complex process.
+
+There exist one more method to calculate AR
+
+<img src="./Evaluating_Model_Performances/CAP_Analysis_2.png"/>
+
+> Note : X > 90%, means model is over fitted. 
+
+## Classification Pros and Cons
+
+<img src="./Evaluating_Model_Performances/Classification_Pros_Cons.png"/>
