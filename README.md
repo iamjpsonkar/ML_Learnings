@@ -1986,3 +1986,169 @@ plt.ylabel('Estimated Salary')
 plt.legend()
 plt.show()
 ```
+
+
+<br/>
+<hr/>
+<br/>
+
+# Selecting best classification model
+
+## Loading and Preprocession Data
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+dataset = pd.read_csv('../Datasets/Classification/Model_Selection_Classification/Data.csv')
+# print(dataset)
+
+X = dataset.iloc[:,:-1].values
+y = dataset.iloc[:,-1].values
+
+
+# # Taking care of Missing values
+# from sklearn.impute import SimpleImputer 
+# imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+# imputer.fit(X[:,:-1])
+# X[:,:-1] =  imputer.transform(X[:,:-1])
+# imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+# imputer.fit(X[:,-2:-1])
+# X[:,-2:-1] =  imputer.transform(X[:,-2:-1])
+# # print(X)
+
+# # Encoding categorial Data [One Hot Encoding]
+# from sklearn.compose import ColumnTransformer
+# from sklearn.preprocessing import OneHotEncoder
+# ct = ColumnTransformer(transformers=[('encode',OneHotEncoder(),[-1])], remainder='passthrough')
+# X = np.array(ct.fit_transform(X))
+# # print(X)
+
+# Splitting dataset into train and test set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+print(X_train)
+print(y_train)
+print(X_test)
+print(y_test)
+```
+
+## Feature Scaling
+
+```python
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+# fit Score of  training data
+sc.fit(X_train)
+# transform training data using the scaler
+X_train = sc.transform(X_train)
+# transform test data using the same scaler
+X_test = sc.transform(X_test)
+```
+
+## Training the Classification Models Score of  Training Data
+
+```python
+# Using Logisitic Regression Classification
+from sklearn.linear_model import LogisticRegression
+classifier = LogisticRegression(random_state = 0)
+classifier.fit(X_train,y_train)
+y_pred_LR = classifier.predict(X_test)
+
+# Using K-Nearest Neighbor Classification
+from sklearn.neighbors import KNeighborsClassifier
+classifier = KNeighborsClassifier(n_neighbors = 5, metric = "minkowski", p = 2)
+classifier.fit(X_train,y_train)
+y_pred_KNN = classifier.predict(X_test)
+
+# Using Support Vector Classification
+from sklearn.svm import SVC
+classifier = SVC(kernel = 'linear', random_state = 0)
+classifier.fit(X_train,y_train)
+y_pred_SVC = classifier.predict(X_test)
+
+# Using Kernel SVM Classification
+from sklearn.svm import SVC
+classifier = SVC(kernel = 'rbf', random_state = 0)
+classifier.fit(X_train,y_train)
+y_pred_KSVM = classifier.predict(X_test)
+
+
+# Using Naive Bayes Classification
+from sklearn.naive_bayes import GaussianNB
+classifier = GaussianNB()
+classifier.fit(X_train,y_train)
+y_pred_NB = classifier.predict(X_test)
+
+
+# Using Decision Tree Classification
+from sklearn.tree import DecisionTreeClassifier
+classifier = DecisionTreeClassifier(criterion = 'entropy', random_state = 0)
+classifier.fit(X_train,y_train)
+y_pred_DT = classifier.predict(X_test)
+
+
+# Using Random Forest Classification
+from sklearn.tree import DecisionTreeClassifier
+classifier = DecisionTreeClassifier(criterion = 'entropy', random_state = 0)
+classifier.fit(X_train,y_train)
+y_pred_RF = classifier.predict(X_test)
+```
+
+## Making the Confusion Matrix and comparing the models
+
+```python
+from sklearn.metrics import confusion_matrix, accuracy_score
+Score =[]
+
+# Using Logisitic Regression Classification
+cm = confusion_matrix(y_test,y_pred_LR)
+acs = accuracy_score(y_test,y_pred_LR)
+Score.append(["Logistic Regression Classification", cm, acs])
+
+# Using K-Nearest Neighbor Classification
+cm = confusion_matrix(y_test,y_pred_KNN)
+acs = accuracy_score(y_test,y_pred_KNN)
+Score.append(["K-Nearest Neighbor Classification", cm, acs])
+
+# Using Support Vector Classification
+cm = confusion_matrix(y_test,y_pred_SVC)
+acs = accuracy_score(y_test,y_pred_SVC)
+Score.append(["Support Vector Classification", cm, acs])
+
+# Using Kernel SVM Classification
+cm = confusion_matrix(y_test,y_pred_KSVM)
+acs = accuracy_score(y_test,y_pred_KSVM)
+Score.append(["Kernel SVM Classification", cm, acs])
+
+
+# Using Naive Bayes Classification
+cm = confusion_matrix(y_test,y_pred_NB)
+acs = accuracy_score(y_test,y_pred_NB)
+Score.append(["Naive Bayes Classification", cm, acs])
+
+
+# Using Decision Tree Classification
+cm = confusion_matrix(y_test,y_pred_DT)
+acs = accuracy_score(y_test,y_pred_DT)
+Score.append(["Decision Tree Classification", cm, acs])
+
+
+# Using Random Forest Classification
+cm = confusion_matrix(y_test,y_pred_RF)
+acs = accuracy_score(y_test,y_pred_RF)
+Score.append(["Random Forest Classification", cm, acs])
+
+
+
+for score in Score:
+    print(score[0],":",score[2])
+    print("Confusion matrix")
+    print(score[1])
+# Confusion Matrix
+# [
+#     [Correct-0,   Incorrect-1]
+#     [Incorrect-0, Correct-0]
+# ]
+```
