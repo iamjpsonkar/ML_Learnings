@@ -2217,3 +2217,135 @@ There exist one more method to calculate AR
 ## Classification Pros and Cons
 
 <img src="./Evaluating_Model_Performances/Classification_Pros_Cons.png"/>
+
+<br/>
+<hr/>
+<br/>
+
+# Clustering
+
+Clustering is a technique, to make some new groups/cluster from a given data points.
+
+## K-Mean Clustering
+
+<img src="./K_Mean_Clustering/K_Mean_1.png" />
+
+**Steps for the K-Mean Clustering**
+
+<img src="./K_Mean_Clustering/K_Mean_Steps.png" />
+
+Let's apply above algorithm on a set of data points, and take K as 2.
+
+<img src="./K_Mean_Clustering/K_Mean_Step_1.png"/>
+
+<img src="./K_Mean_Clustering/K_Mean_Step_2.png"/>
+
+<img src="./K_Mean_Clustering/K_Mean_Step_3.png"/>
+
+<img src="./K_Mean_Clustering/K_Mean_Step_4.png"/>
+
+<img src="./K_Mean_Clustering/K_Mean_Step_5.png"/>
+
+<img src="./K_Mean_Clustering/K_Mean_Step_6.png"/>
+
+<img src="./K_Mean_Clustering/K_Mean_Step_7.png"/>
+
+<img src="./K_Mean_Clustering/K_Mean_Step_8.png"/>
+
+<img src="./K_Mean_Clustering/K_Mean_Step_9.png"/>
+
+<img src="./K_Mean_Clustering/K_Mean_Step_10.png"/>
+
+In this way, the K-Mean Clustering works.
+
+> ### Random Initialization Trap : If somehow we select very bad initial K centroids, the result may vary. To avoid this issue instead of K-Mean Clustering , K-Mean++ Clustering is used.
+<br/>
+
+### Choosing right number of cluster [The Elbow Technique]
+In any dataset, we can have minimum one cluster, and maximum N cluster, N is the total data points.
+
+In the first step we need to select the value of K, For better selection we can use **Within Cluster Sum of Squares (WCSS)** technique
+
+$$ WCSS = \sum_{i=1}^{K} \sum_{j=1}^{N_{i}} Distance(C_{i},P_{ij})^{2} $$
+$$ K : No \ \  of \ Clusters $$
+$$ N_{i} :  No \ \  of \ Points \  inside \ i^{th} \  Cluster $$
+$$ C_{i} : Centroid \ \  of \ i^{th} \  Cluster $$
+$$ P_{ij} :  j^{th} \ Point \ \  inside \ i^{th} \  Cluster $$
+
+For below datapoints
+
+- K = 1
+<img src="./K_Mean_Clustering/Choose_K_1.png"/>
+- K = 2
+<img src="./K_Mean_Clustering/Choose_K_2.png"/>
+- K = 3
+<img src="./K_Mean_Clustering/Choose_K_3.png"/>
+
+As we increase K, value of WCSS keeps decreasing, **Inversly Proportinal**
+
+$$ WCSS \propto \frac {1} {K} $$
+
+Below is the graph between **WCSS vs K**
+
+<img src="./K_Mean_Clustering/WCSS_Graph.png"/>
+
+The shape of the graph is very simillar to a human hand, and it was found that the point near elbow of the graph is the best value of K.
+
+<img src="./K_Mean_Clustering/WCSS_Graph_Elbow.png"/>
+
+### Data Preprocessing
+```python
+# Data Preprocessing
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+dataset = pd.read_csv('../Datasets/Clustering/K_Mean_Clustering/Mall_Customers.csv')
+
+X = dataset.iloc[:,[3,4]].values
+
+print(X)
+```
+
+### The Elbow Method
+```python
+from sklearn.cluster import KMeans
+wcss = []
+for i in range(1,11):
+    kmeans = KMeans(n_clusters = i, init = 'k-means++', random_state = 42)
+    kmeans.fit(X)
+    wcss.append(kmeans.inertia_)
+plt.plot(range(1,11),wcss)
+plt.title("The Elbow Method")
+plt.xlabel("Number of Clusters")
+plt.ylabel("WCSS")
+plt.show()
+'''
+From below graph, it is clear that K = 5 is the optimal value
+'''
+```
+
+### Training the K-Means Clustering Model on Training Dataset
+```python
+K = 5
+kmeans = KMeans(n_clusters = K, init = 'k-means++', random_state = 42)
+y_kmeans = kmeans.fit_predict(X)
+print(y_kmeans)
+```
+
+### Visualizing the cluster
+```python
+plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s = 50, c = 'red', label =  'Cluster 1')
+plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s = 50, c = 'blue', label =  'Cluster 2')
+plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], s = 50, c = 'green', label =  'Cluster 3')
+plt.scatter(X[y_kmeans == 3, 0], X[y_kmeans == 3, 1], s = 50, c = 'cyan', label =  'Cluster 4')
+plt.scatter(X[y_kmeans == 4, 0], X[y_kmeans == 4, 1], s = 50, c = 'magenta', label =  'Cluster 5')
+plt.scatter(kmeans.cluster_centers_[:,0], kmeans.cluster_centers_[:,1], s = 100, c = 'yellow', label = 'Centroids')
+
+plt.title("Clusters of Customers")
+plt.xlabel("Anual Income (k$) ")
+plt.ylabel("Spending Score (0-100)")
+plt.legend()
+plt.show()
+```
