@@ -2349,3 +2349,158 @@ plt.ylabel("Spending Score (0-100)")
 plt.legend()
 plt.show()
 ```
+
+<br/>
+<hr/>
+<br/>
+
+## Hierarchical Clustering
+
+Output will be simillar to the K-Means Clustering, but process is different
+
+Types of Hierarchical Clustering
+1. Agglomerative Hierarchical Clustering
+2. Divisive Hierarchical Clustering
+
+> ### Agglomerative Hierarchical Clustering
+
+<img src="./Hierarchical_Clustering/Agglomerative_HC_steps.png" />
+
+<img src="./Hierarchical_Clustering/Distance_BW_Clusters.png" />
+
+Let's apply Agglomerative Hierarchical Clustering steps on below data points
+<img src="./Hierarchical_Clustering/Agglomerative_HC_step_0.png" />
+
+
+
+
+<img src="./Hierarchical_Clustering/Agglomerative_HC_step_1.png" />
+
+
+<img src="./Hierarchical_Clustering/Agglomerative_HC_step_2.png" />
+
+
+<img src="./Hierarchical_Clustering/Agglomerative_HC_step_3.png" />
+
+
+<img src="./Hierarchical_Clustering/Agglomerative_HC_step_4.png" />
+
+
+<img src="./Hierarchical_Clustering/Agglomerative_HC_step_5.png" />
+
+
+<img src="./Hierarchical_Clustering/Agglomerative_HC_step_6.png" />
+
+**Agglomerative Clustering** remembers the process by which one huge cluster is created, this process is stored in the memory in the form of **Dendrograms**.
+
+> ### Dendrograms
+These are basically a graph simillar to bar chart that is plotted b/w datapoints/clusters vs Eucledian Distance b/w datapoints/clusters.
+
+### How to Draw Dendrograms
+Let's convert below datpoints/clusters into Dendrograms
+<img src="./Hierarchical_Clustering/Dendrograms_0.png" />
+
+> [ P<sub>2</sub> ] + [ P<sub>3</sub> ]
+<img src="./Hierarchical_Clustering/Dendrograms_1.png" />
+**Height of any bar is the Eucledian Distance/Disimilarity b/w the two clusters**
+
+> [ P<sub>5</sub> ] + [ P<sub>6</sub> ]
+<img src="./Hierarchical_Clustering/Dendrograms_2.png" />
+
+> [ P<sub>2</sub>, P<sub>3</sub> ] + [ P<sub>1</sub> ]
+<img src="./Hierarchical_Clustering/Dendrograms_3.png" />
+
+> [ P<sub>5</sub>, P<sub>6</sub> ] + [ P<sub>4</sub> ]
+<img src="./Hierarchical_Clustering/Dendrograms_4.png" />
+
+> [ P<sub>1</sub>, P<sub>2</sub>, P<sub>3</sub> ] + [ P<sub>4</sub>, P<sub>5</sub>, P<sub>6</sub> ]
+<img src="./Hierarchical_Clustering/Dendrograms_5.png" />
+
+And Finally,
+> [ P<sub>1</sub>, P<sub>2</sub>, P<sub>3</sub>, P<sub>4</sub>, P<sub>5</sub>, P<sub>6</sub> ]
+<img src="./Hierarchical_Clustering/Dendrograms_6.png" />
+
+
+### How to Use Dendrograms
+
+Let's assume all the bars have their horizontal line, starting from 0, then our dendrogram will look like
+<img src="./Hierarchical_Clustering/Dendrograms_HL.png" />
+
+Now we have two types of lines in the graph
+1. Horizontal lines
+2. Vertical lines
+
+Select Longest vertical line, that is not crossing any Horizontal line, reference vertical line.
+<img src="./Hierarchical_Clustering/Dendrograms_HLM.png" />
+
+Now, draw a Horizontal line from the center of  reference vertical line and extend it from 0 to max, this new Horizontal line is basically the maximum allowed Disimilarity between clusters. let's say it reference horizontal line.
+<img src="./Hierarchical_Clustering/Dendrograms_V_HL.png" />
+
+Now, no of vertical lines that are crossed by the reference horizontal line, are the no of cluster for the given datapoints
+<img src="./Hierarchical_Clustering/Dendrograms_2_CL.png" />
+
+We are getting two cluster for above datasets, where maximum allowed disimilarity is 1.7.
+
+
+<img src="./Hierarchical_Clustering/Dendrograms_2_CL.png" />
+
+We are getting three cluster for above datasets, where maximum allowed disimilarity is 2.5.
+
+
+```python
+# Data Preprocessing
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+dataset = pd.read_csv('../Datasets/Clustering/Hierarchical_Clustering/Mall_Customers.csv')
+
+X = dataset.iloc[:,[3,4]].values
+
+print(X)
+```
+
+### Using the Dendrograms methods, to find optimal value of K
+```python
+import scipy.cluster.hierarchy as sch # new library for dendrograms
+dendrogram = sch.dendrogram(sch.linkage(X, method = 'ward')) # ward -> minimum variance technique
+plt.axhline(y=350) # line 1 
+plt.axhline(y=150) # line 2
+plt.title("Dendrogram")
+plt.xlabel("Customers")
+plt.ylabel("Euclidean Distance")
+plt.show()
+
+'''
+Either we can take the third blue vertical line y=350 , or the third orange lines, y=150, as both looks largest
+Let's choose the third orange vertical line y=150
+From below graph, it is clear that K = 5 is the optimal value
+'''
+
+print()
+```
+
+### Training the Hierarchical Clustering Model on Training Dataset
+```python
+from sklearn.cluster import AgglomerativeClustering
+hc = AgglomerativeClustering(n_clusters = 5, affinity = 'euclidean', linkage = 'ward')
+y_hc = hc.fit_predict(X)
+print(y_hc)
+```
+
+### Visualizing the cluster
+```python
+plt.scatter(X[y_hc == 0, 0], X[y_hc == 0, 1], s = 50, c = 'red', label =  'Cluster 1')
+plt.scatter(X[y_hc == 1, 0], X[y_hc == 1, 1], s = 50, c = 'blue', label =  'Cluster 2')
+plt.scatter(X[y_hc == 2, 0], X[y_hc == 2, 1], s = 50, c = 'green', label =  'Cluster 3')
+plt.scatter(X[y_hc == 3, 0], X[y_hc == 3, 1], s = 50, c = 'cyan', label =  'Cluster 4')
+plt.scatter(X[y_hc == 4, 0], X[y_hc == 4, 1], s = 50, c = 'magenta', label =  'Cluster 5')
+
+plt.title("Clusters of Customers")
+plt.xlabel("Anual Income (k$) ")
+plt.ylabel("Spending Score (0-100)")
+plt.legend()
+plt.show()
+```
+
