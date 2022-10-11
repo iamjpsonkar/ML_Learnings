@@ -2504,3 +2504,112 @@ plt.legend()
 plt.show()
 ```
 
+<br/>
+<hr/>
+<br/>
+
+# Association Rule Learning
+let's take below statements
+
+>Person Who watched Movie1 also watches Movie2.
+
+>Person Who bought product1 also buys product2.
+
+The above two statement are in the form 
+
+$$ S_{1} \rightarrow S_{2} $$
+
+<img src="./Association_Rule_Learning/Movie_Recommendation.png"/>
+
+<img src="./Association_Rule_Learning/Product_Recommendation.png"/>
+
+This type of statement are know as **Association Rule** , Basically we are associating S<sub>2</sub> with S<sub>1</sub>.
+
+These type of rules basically help in recommendation system.
+
+## Apriori Algorithim
+
+Let's take a Movie watch history data for 100 peoples.
+<img src="./Association_Rule_Learning/Apriori_Algorithm/Movie_DATA.png"/>
+Red marked - watched Movie M<sub>1</sub>
+
+Green - watched Movie M<sub>2</sub>
+
+
+
+### Apriori Support
+<img src="./Association_Rule_Learning/Apriori_Algorithm/Apriori_Support.png"/>
+If out of 100 peoples, 10 watched Movie M<sub>1</sub>, then
+
+$$ Apriori \ Support \ for \ M_{1} = \frac{10}{100} = 10% $$
+
+### Apriori Confidence
+<img src="./Association_Rule_Learning/Apriori_Algorithm/Apriori_Confidence.png"/>
+If out of 100 peoples, 40 watched Movie M<sub>2</sub>, and out of these 40, only 7 watched M<sub>1</sub> and M<sub>2</sub>
+
+$$ Apriori \ Confidence \ for \ M_{1} \rightarrow M_{2} = \frac{7}{40} = 17.5% $$
+
+
+### Apriori Lift
+<img src="./Association_Rule_Learning/Apriori_Algorithm/Apriori_Lift.png"/>
+Now suppose for a new population, if you directly recommend peoples to watch Movie M<sub>1</sub>, then there is a chance of only 10%, but if you ask first whether they have watched M<sub>2</sub> and based on the answer you recommend M<sub>1</sub>, then there is a chance of 17.5%.
+
+This is known as Apriori Lift.
+
+$$ Apriori \ Lift \ for \ M_{1} \rightarrow M_{2} = \frac{17.5\%}{10\%} = 1.75% $$
+
+> Steps for Apriori Algoritnms
+<img src="./Association_Rule_Learning/Apriori_Algorithm/Apriori_Steps.png"/>
+
+```python
+# Importing Libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Importing Datasets
+dataset = pd.read_csv("./Datasets/Market_Basket_Optimisation.csv", header = None)
+
+transactions = []
+for i in range(dataset.shape[0]):
+    transactions.append([str(dataset.values[i, j]) for j in range(dataset.shape[1])])
+
+# print(transactions)
+```
+
+## Training Apriori Model on the dataset
+
+```python
+from apyori import apriori
+rules = apriori(transactions = transactions, min_support = 0.003, min_confidence = 0.2, min_lift = 3, min_length = 2, max_length = 2)
+```
+
+## Visualizing the results
+
+### Displaying the firsts result directly comming from apriori funtion
+```python
+results = list(rules)
+print(results)
+```
+
+### Putting the results well organised into a pandas dataframe
+```python
+def inspect(results):
+    lhs         = [tuple(result[2][0][0])[0] for result in results]
+    rhs         = [tuple(result[2][0][1])[0] for result in results]
+    supports    = [result[1] for result in results]
+    confidences = [result[2][0][2] for result in results]
+    lifts       = [result[2][0][3] for result in results]
+    return list(zip(lhs, rhs, supports, confidences, lifts))
+resultsinDataFrame = pd.DataFrame(inspect(results), columns = ['Left Hand Side', 'Right Hand Side', 'Support', 'Confidence', 'Lift'])
+```
+
+### Displaying the result non sorted
+```python
+print(resultsinDataFrame)
+```
+
+### Displaying the result in descending order by Lift
+```python
+print(resultsinDataFrame.nlargest(n=10,columns = 'Lift'))
+```
