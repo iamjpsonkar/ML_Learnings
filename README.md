@@ -708,7 +708,7 @@ plt.show()
 4. To predict for a test, First predict using all the N Decision Trees as y<sub>1</sub>, y<sub>2</sub>, y<sub>3</sub>, ... , y<sub>N</sub>.
 5. Now take the average of the N values
 
-## Load and preprocess Dataset
+### Load and preprocess Dataset
 
 ```python
 import numpy as np
@@ -1603,9 +1603,9 @@ for any k = 1, 2, 3, … , n
 **Proof**
 
 <pre>Probability of A given that B has occured</pre>
-$$ P(A \mid B) = \frac{P(A \cap B)}{P(B)}  \; \; \; \; \; \; \; \; \; \;...\; (1)$$
+$$ P(A \mid B) = \frac{P(A \cap B)}{P(B)}  \  \  \  \  \  \  \  \  \  \ ...\  (1)$$
 <pre>Probability of A given that B has occured</pre>
-$$ P(B \mid A) = \frac{P(A \cap B)}{P(A)}  \; \; \; \; \; \; \; \; \; \;...\; (2)$$
+$$ P(B \mid A) = \frac{P(A \cap B)}{P(A)}  \  \  \  \  \  \  \  \  \  \ ...\  (2)$$
 
 Now using (1) and (2)
 
@@ -1702,15 +1702,15 @@ P(Walks|X) v.s. P(Drives|X)
 
 In the Step 3
 
-$$ P(Walks \mid X) \; \; v.s. \; \; P(Drives \mid X) $$
+$$ P(Walks \mid X) \  \  v.s. \  \  P(Drives \mid X) $$
 
-$$ \frac { P(X \mid Walks) \cdot P(Walks)} {P(X)} \; \; v.s. \; \; \frac { P(X \mid Drives) \cdot P(Drives)} {P(X)} $$
+$$ \frac { P(X \mid Walks) \cdot P(Walks)} {P(X)} \  \  v.s. \  \  \frac { P(X \mid Drives) \cdot P(Drives)} {P(X)} $$
 
 P(X) can be discarded
 
-$$ \frac { P(X \mid Walks) \cdot P(Walks)} { \xcancel{P(X)} } \; \; v.s. \; \; \frac { P(X \mid Drives) \cdot P(Drives)} {\xcancel{P(X)} } $$
+$$ \frac { P(X \mid Walks) \cdot P(Walks)} { \xcancel{P(X)} } \  \  v.s. \  \  \frac { P(X \mid Drives) \cdot P(Drives)} {\xcancel{P(X)} } $$
 
-$$ P(X \mid Walks) \cdot P(Walks) \; \; v.s. \; \; P(X \mid Drives) \cdot P(Drives) $$
+$$ P(X \mid Walks) \cdot P(Walks) \  \  v.s. \  \  P(X \mid Drives) \cdot P(Drives) $$
 
 
 ### Loading and Preprocession Data
