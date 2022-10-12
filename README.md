@@ -1,5 +1,3 @@
-# **Machine Learning Notes**
-
 > # Data Preprocessing
 
 ## Importing the Libraries
@@ -45,9 +43,14 @@ print(y)
     - Mean value
     - Median value
     - Mode value
-### Importing other modules
+
+
+## Importing other modules
+
 - scikit-learn
 : module for machine learning and data mining
+
+
 ```python
 from sklearn.impute import SimpleImputer
 imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
@@ -55,7 +58,6 @@ imputer.fit(X[:,1:3])
 X[:,1:3] = imputer.transform(X[:,1:3])
 print(X)
 ```
-[comment]: <> (Webapp for MD table https://www.tablesgenerator.com/markdown_tables)
 
 | Country | Age  | Salary  | Purchased |
 |---------|------|---------|-----------|
@@ -74,6 +76,8 @@ print(X)
 Categorial data, needs to be encoded to numerical data type
 - OneHotEncoder
 : converts a categorial data column into sevral columns of 0 and 1
+
+
 ```python
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
@@ -81,6 +85,8 @@ ct = ColumnTransformer(transformers=[('encode',OneHotEncoder(),[0])], remainder=
 X = np.array(ct.fit_transform(X))
 print(X)
 ```
+
+
 | Country0 | Country1 | Country1 | Age  | Salary   | Purchased |
 |----------|----------|----------|------|----------|-----------|
 | 1.0      | 0.0      | 0.0      | 44.0 | 72000.0  | No        |
@@ -97,12 +103,14 @@ print(X)
 ## Encoding categorial data [Dependent Variable]
 - Label Encoder
 : Convert categorial data into binary
+
 ```python
 from sklearn.preprocessing import LabelEncoder
 le = LabelEncoder()
 y = le.fit_transform(y)
 print(y)
 ```
+
 | Country0 | Country1 | Country2 | Age  | Salary   | Purchased |
 |----------|----------|----------|------|----------|-----------|
 | 1.0      | 0.0      | 0.0      | 44.0 | 72000.0  | 0         |
@@ -129,7 +137,6 @@ Scaling Dataset, such that all the values lie inside a small range
 - Standardisation
 : This will scale values to [-3,+3]
 
-[comment]: <> (Webapp for MD equation https://latex.codecogs.com/eqneditor/editor.php)
 $$ X_{stand} = \frac{x- X_{mean}}{standard \ \ deviation(X)} $$
 
 - Normalisation
@@ -148,7 +155,14 @@ X_train[:,3:] = sc.transform(X_train[:,3:])
 X_test[:,3:] = sc.transform(X_test[:,3:])
 ```
 
-> # Simple Linear Regression
+<br/>
+<hr/>
+<br/>
+
+> # Regression
+
+## Simple Linear Regression
+
 ### Predicts continious numerical values
 In simple linear regression, we simply predict value based on an equation
 
@@ -156,38 +170,46 @@ $$ y = b_{0} \ \ + \ \ b_{1}x $$
 
 In above equation, y will depend on the values of x, so we can predict/calculate value of y, if value of x is already known.
 
-> ### Loading new Dataset
+
+### Loading the Dataset
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd 
 
-dataset = pd.read_csv("../Datasets/Regression/Simple_Linear_Regression/Salary_Data.csv")
+dataset = pd.read_csv("./Regression/Simple_Linear_Regression/Datasets/Salary_Data.csv")
 
 X=dataset.iloc[:,:-1].values
 y=dataset.iloc[:,-1].values
-```
-```python
+
+
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
 ```
-## Training the Simple Regression Model on the Training dataset
+
+### Training the Simple Regression Model on the Training dataset
+
 In this step, Simple Linear Regression model is trained using the training dataset.   
 Simply equation for the Linear Regression is computed, using training dataset.
+
 ```python
 from sklearn.linear_model import LinearRegression
 regressor = LinearRegression()
 regressor.fit(X_train, y_train)
 ```
-## Predicting the result for Test Dataset
+
+### Predicting the result for Test Dataset
 In this step, result for test data is predicted using above trained model.
+
 ```python
 y_pred = regressor.predict(X_test)
 print(y_pred)
 print(y_test)
 ```
-## Visualising the Training set result
+
+### Visualising the Training set result
+
 ```python
 plt.scatter(X_train, y_train, color='red')
 plt.plot(X_train, regressor.predict(X_train), color='blue')
@@ -196,7 +218,9 @@ plt.xlabel('Years of Experience')
 plt.ylable('Salary')
 plt.show()
 ```
-## Visualising the Test set result
+
+### Visualising the Test set result
+
 ```python
 plt.scatter(X_test, y_test, color='red')
 plt.plot(X_test, y_pred, color='blue')
@@ -205,11 +229,15 @@ plt.xlabel('Years of Experience')
 plt.ylable('Salary')
 plt.show()
 ```
-## Predict salary for a single Experience
+
+### Predict salary for a single Experience
+
 ```python
 print(regressor.predict([[0]]))
 ```
-## Computing the Linear Regression Equation
+
+### Computing the Linear Regression Equation
+
 ```python
 n=len(X_train[0])
 ans=[]
@@ -221,15 +249,18 @@ for i in range(n):
     eq+=" + {}*x{}".format(b[0],i+1)
 print(eq)
 ```
-> # Multiple Linear Regression
+
+## Multiple Linear Regression
+
 If there are multiple variables inside Linear Regression Equation, it is known as Multiple Linear Regression
+
 Let's see equation
 
 $$y = b_{0} \ \ + \ \ b_{1}x_{1}  \ \ + \ \ b_{2}x_{2}  \ \ + \ \ b_{3}x_{3} \ \ + \ \ ... \ \ + \ \ b_{n}x_{n}$$
 
 Now y will depend on multiple values, we can still predict/calculate value of y, if we have the equation and the values of the X.
 
-## Assumptions of Linear Regression
+### Assumptions of Linear Regression
 There are 5 assumptions
 1. Linearity
 2. Homoscedasticity
@@ -237,18 +268,19 @@ There are 5 assumptions
 4. Independence of Errors
 5. Lack of Multicollinearity
 
-## Hypothesis Testing (P-Value)
+### Hypothesis Testing (P-Value)
 Supose you have a coin, and you are tossing it continiously
 1. got HEAD, its probability is 0.5
 2. got again HEAD, its probability is 0.25
 3. got again HEAD, its probability is 0.12
 4. got again HEAD, its probability is 0.06
 
-If you get get HEAD again (probability 0.03), coin is suspicous. you may think coin is not a fair coin.\
-The point/percent at which you become suspicious is known as **Significance Value**.\
+If you get get HEAD again (probability 0.03), coin is suspicous. you may think coin is not a fair coin.
+The point/percent at which you become suspicious is known as **Significance Value**.
+
 Initially we assume coin is fair, but when the significance value is reached, we correct our assumption (Hypothesis) and confirm that it is not a fair coin, this is known as **Null Hypothesis Testing**.
 
-## Building a Multiple Linear Regression Model
+### Building a Multiple Linear Regression Model
 There are 5 ways to build Multiple Linear Regression Model
 1. All In
 :  Select all the columns
@@ -282,13 +314,14 @@ Step-wise Regression
 - Forward Selection
 - Bidirection Elemination
 
-## Loading Data and preprocessing it
+### Loading Data and preprocessing it
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-dataset = pd.read_csv('../Datasets/Regression/Multiple_Linear_Regression/50_Startups.csv')
+dataset = pd.read_csv('./Datasets/Regression/Multiple_Linear_Regression/50_Startups.csv')
 # print(dataset)
 
 X = dataset.iloc[:,:-1].values
@@ -315,25 +348,29 @@ X = np.array(ct.fit_transform(X))
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
 ```
-## Training the Linear Regression Model on the training set
+
+### Training the Linear Regression Model on the training set
+
 ```python
 from sklearn.linear_model import LinearRegression
 regressor = LinearRegression()
 regressor.fit(X_train, y_train)
 ```
 
-## Predicting the result for test set result
+### Predicting the result for test set result
+
 ```python
 y_pred = regressor.predict(X_test)
 ```
 
-## Visualising the predicted and actual results
+### Visualising the predicted and actual results
+
 ```python
 np.set_printoptions(precision=2)
 print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
 ```
 
-## Computing the equation of model
+### Computing the equation of model
 ```python
 n = len(X_train[0])
 b0=regressor.predict([[0 for _ in range(n)]])
@@ -343,10 +380,13 @@ for i in range(n):
 print(eq)
 ```
 
-> # Polynomial Regression
+## Polynomial Regression
+
 If the power raise to variable is not only 1, but may have different powers of the variable x, it is known as Polynomial Regression.
 Let's see the equation
+
 $$y = b_{0} \ \ + \ \ b_{1}x^{1}  \ \ + \ \ b_{2}x^{2}  \ \ + \ \ b_{3}x^{3} \ \ + \ \ ... \ \ + \ \ b_{n}x^{n}$$
+
 Now y will depend on multiple powers of the x, we can still predict/calculate value of y, if we have the equation and the value of the x.
 
 ```python
@@ -385,14 +425,16 @@ print(y)
 # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
 ```
 
-## Training the linear regression model on whole dataset
+### Training the linear regression model on whole dataset
+
 ```python
 from sklearn.linear_model import LinearRegression
 lin_reg_1 =  LinearRegression()
 lin_reg_1.fit(X,y)
 ```
 
-## Training the polynomial regression model on whole dataset [n=2]
+### Training the polynomial regression model on whole dataset [ n=2 ]
+
 ```python
 from sklearn.preprocessing  import PolynomialFeatures
 poly_fet = PolynomialFeatures(degree=2)
@@ -401,7 +443,8 @@ lin_reg_2 = LinearRegression()
 lin_reg_2.fit(poly_X,y)
 ```
 
-## Visualising the Linear Regression result
+### Visualising the Linear Regression result
+
 ```python
 plt.scatter(X,y,color='red')
 plt.plot(X,lin_reg_1.predict(X),color='blue')
@@ -409,7 +452,8 @@ plt.title('Truth or Bluff (Linear Regression Model)')
 plt.show()
 ```
 
-## Visualising the Polynomial Regression result
+### Visualising the Polynomial Regression result
+
 ```python
 plt.scatter(X,y,color='red')
 plt.plot(X,lin_reg_2.predict(poly_X),color='blue')
@@ -417,7 +461,8 @@ plt.title('Truth or Bluff (Polynomial Regression Model) n=2')
 plt.show()
 ```
 
-## Training the polynomial regression model on whole dataset [n=4]
+### Training the polynomial regression model on whole dataset [ n=4 ]
+
 ```python
 from sklearn.preprocessing  import PolynomialFeatures
 poly_fet = PolynomialFeatures(degree=4)
@@ -426,7 +471,8 @@ lin_reg_2 = LinearRegression()
 lin_reg_2.fit(poly_X,y)
 ```
 
-## Visualising the Polynomial Regression result
+### Visualising the Polynomial Regression result
+
 ```python
 plt.scatter(X,y,color='red')
 plt.plot(X,lin_reg_2.predict(poly_X),color='blue')
@@ -434,7 +480,8 @@ plt.title('Truth or Bluff (Polynomial Regression Model) n=4')
 plt.show()
 ```
 
-## Visualising the Polynomial Regression result with higher resolution and smoother curve
+### Visualising the Polynomial Regression result with higher resolution and smoother curve
+
 ```python
 from sklearn.preprocessing  import PolynomialFeatures
 
@@ -450,21 +497,26 @@ plt.title('Truth or Bluff (Polynomial Regression Model) n=4, smooth curve')
 plt.show()
 ```
 
-## Predicting a new result using Linear Model
+### Predicting a new result using Linear Model
+
 ```python
 lin_reg_1.predict([[6.5]])
 ```
-## Predicting a new result using Polynomial Model
+
+### Predicting a new result using Polynomial Model
+
 ```python
 lin_reg_2.predict(poly_fet.fit_transform([[6.5]]))
 ```
 
-> ## Support Vector Regression [SVR]
+## Support Vector Regression [ SVR ]
+
 In this regression, instead of a regression line, a hyperplane is used.\
 Points lying insdie/on the hyperplane are allowed errors, Points lying outside the hyperplane are known as support vector,\
 Hence this is known as **Support Vector Regression [SVR]**
 
 ### Loading Data and preprocessing it
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -502,6 +554,7 @@ print(y)
 ```
 
 ### Feature Scaling
+
 ```python
 from sklearn.preprocessing import StandardScaler
 
@@ -521,6 +574,7 @@ print(y)
 ```
 
 ### Training the SVR model on the whole dataset
+
 ```python
 from sklearn.svm import SVR
 regressor =  SVR(kernel='rbf')
@@ -528,6 +582,7 @@ regressor.fit(X,y.ravel())
 ```
 
 ### Predict the salary for new test case
+
 ```python
 y_pred = regressor.predict(sc_X.transform([[6.5]]))
 print(y_pred)
@@ -536,6 +591,7 @@ print(y_pred)
 ```
 
 ### Visualising the SVR model
+
 ```python
 plt.scatter(sc_X.inverse_transform(X),sc_y.inverse_transform(y),color='red')
 plt.plot(sc_X.inverse_transform(X),sc_y.inverse_transform(regressor.predict(X).reshape(len(y),1)),color='blue')
@@ -544,6 +600,7 @@ plt.show()
 ```
 
 ### Visualising the SVR model in High Resolution
+
 ```python
 X_grid = np.arange(min(sc_X.inverse_transform(X)),max(sc_X.inverse_transform(X)),0.1)
 X_grid = X_grid.reshape((len(X_grid),1))
@@ -554,8 +611,12 @@ plt.show()
 ```
 
 ## Decision Tree Regression
-In this we add some check [like if else] and based in the condition we predict the value\
+
+In this we add some check [like if else] and based on the condition we predict the value 
+
+
 **predict value of z, when values of x and y are given**
+
 ```python
 if x < 20:
     if y < 200:
@@ -571,9 +632,11 @@ else:
     else:
         z = 1023
 ```
+
 Basically we split our Dataset graph in various section, and for every new point we find the section in which new data lies, and then for prediction we just take average of that section.
 
 ### Load and preprocess the data
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -611,6 +674,7 @@ print(y)
 ```
 
 ### Training the Decision Tree Regression model on the whole dataset
+
 ```python
 from sklearn.tree import DecisionTreeRegressor
 regressor = DecisionTreeRegressor(random_state=0)
@@ -618,11 +682,13 @@ regressor.fit(X,y)
 ```
 
 ### Predicting the value for new test using Decision Tree Regressor
+
 ```python
 regressor.predict([[6.5]])
 ```
 
 ### Visualising the Decision Tree Regression model [High Resolution]
+
 ```python
 X_grid = np.arange(min(X),max(X),0.1)
 X_grid = X_grid.reshape((len(X_grid),1))
@@ -635,6 +701,7 @@ plt.show()
 ## Random Forest Regression [Ensemble Learning]
 
 ### Steps/Procedure
+
 1. Pick a number K, and select K random Data Points from the dataset
 2. Build a Decision Tree associated with these K points
 3. Pick a random[large] number N and build N Decision Tree using Step 1 and Step 2.
@@ -642,6 +709,7 @@ plt.show()
 5. Now take the average of the N values
 
 ## Load and preprocess Dataset
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -679,6 +747,7 @@ print(y)
 ```
 
 ### Train the Random Forest Regression Model using whole dataset
+
 ```python
 from sklearn.ensemble import RandomForestRegressor
 regressor = RandomForestRegressor(n_estimators=10, random_state=0)
@@ -686,11 +755,13 @@ regressor.fit(X,y)
 ```
 
 ### Predict the result for a new test
+
 ```python
 regressor.predict([[6.5]])
 ```
 
 ### Visualisation of the Random Forest Regression Model
+
 ```python
 plt.scatter(X,y,color='red')
 plt.plot(X,regressor.predict(X),color='blue')
@@ -699,6 +770,7 @@ plt.show()
 ```
 
 ### Visualisation of the Random Forest Regression Model [High Resolution]
+
 ```python
 X_grid = np.arange(min(X),max(X),0.1)
 X_grid = X_grid.reshape((len(X_grid),1))
@@ -709,10 +781,15 @@ plt.show()
 ```
 
 ## R-Square method to comare the models
+
 Suppose the points on the regression line are
+
 $$ Y = mx + C $$
-$$ RY_{1}, RY_{2}, RY_{3}, ... ,RY_{n} $$
+
+$$ RY_{1}, \  RY_{2}, \  RY_{3}, \  ... \  , \  RY_{n} $$
+
 Now lets Assume Y<sub>Avg</sub> is average of all given y points, and the equation for average prediction regression is
+
 $$ Y = Y_{Avg} $$
 
 ### Squared Sum of Residuals 
@@ -726,18 +803,25 @@ $$ R^2 = 1 - \frac{SS_{res}}{SS_{tot}} $$
 
 **If value of  R<sup>2</sup> is nearer to 1, model is good.**
 
-## Adjusted R<sup>2</sup>
-It is observed that, whenever you add a new independent variable in regression equation, SS<sub>res</sub> is either going to increase or be the same, So R<sup>2</sup> will always increase, hence this method will not help in case of adding a new variable in regression, Now
+### Adjusted R<sup>2</sup>
+
+It is observed that, whenever you add a new independent variable in regression equation, SS<sub>res</sub> is either going to increase or be the same, So R<sup>2</sup> will always increase, hence this method will not help in case of adding a new variable in regression.
+Now, 
+
 $$ R^2_{adj} = 1 - (1-R^2) \frac{n-1}{n-p-1} $$
-n - Sample Size<br/> 
+
+n - Sample Size
+
 p - No of Independent variable used in regression
 
 <br/>
 <hr/>
 <br/>
 
-> ## Regression Model Selection [ Comparing and finding best regresssion Model]
-### Load and preprocess Dataset
+> # Regression Model Selection [ Comparing and finding best regresssion Model]
+
+## Load and preprocess Dataset
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -774,7 +858,8 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
 ```
 
-### Prediction using Multiple Linear Regression
+## Prediction using Multiple Linear Regression
+
 ```python
 from sklearn.linear_model import LinearRegression
 regressor = LinearRegression()
@@ -783,7 +868,8 @@ y_pred_MLR = regressor.predict(X_test)
 print(y_pred_MLR)
 ```
 
-### Prediction using Polynomial Regression
+## Prediction using Polynomial Regression
+
 ```python
 from sklearn.preprocessing  import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
@@ -795,7 +881,8 @@ y_pred_PR = poly_reg.predict(poly_fet.fit_transform(X_test))
 print(y_pred_PR)
 ```
 
-### Prediction using Support Vector Regression
+## Prediction using Support Vector Regression
+
 ```python
 from sklearn.preprocessing import StandardScaler
 
@@ -823,7 +910,8 @@ y_pred_SVR = sc_y.inverse_transform(y_pred_SVR.reshape(len(y_pred_SVR),1)).ravel
 print(y_pred_SVR)
 ```
 
-### Prediction using Decision Tree Regression
+## Prediction using Decision Tree Regression
+
 ```python
 from sklearn.tree import DecisionTreeRegressor
 regressor = DecisionTreeRegressor(random_state=0)
@@ -832,7 +920,8 @@ y_pred_DTR = regressor.predict(X_test)
 print(y_pred_DTR)
 ```
 
-### Prediction using Random Forest Regression
+## Prediction using Random Forest Regression
+
 ```python
 from sklearn.ensemble import RandomForestRegressor
 regressor = RandomForestRegressor(n_estimators=10, random_state=0)
@@ -855,10 +944,13 @@ for method in R2S:
     print(method,":",R2S[method])
 ```
 
+<br/>
 <hr/>
-<hr/>
+<br/>
 
-> # **Logistic Regression**
+> # Classification
+
+## Logistic Regression
 
 Instead of predicting a value, when we try to pridict probability of any event, We use Logistic regression. The outcome of this forecast lies between 0 and 1
 
@@ -876,7 +968,8 @@ This above eqation is used in **Logistic Regression**.
 
 Now we select a threshold value [0,1], if predicted probability is less than the threshhold value, Outcome is NO else YES.
 
-## Loading and Preprocession Data
+### Loading and Preprocession Data
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -915,7 +1008,8 @@ print(X_test)
 print(y_test)
 ```
 
-## Feature Scaling
+### Feature Scaling
+
 ```python
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
@@ -927,26 +1021,30 @@ X_train = sc.transform(X_train)
 X_test = sc.transform(X_test)
 ```
 
-## Training the Logistic Regression Model using Training Data
+### Training the Logistic Regression Model using Training Data
+
 ```python
 from sklearn.linear_model import LogisticRegression
 classifier = LogisticRegression(random_state = 0)
 classifier.fit(X_train,y_train)
 ```
 
-## Predicting a test resullt
+### Predicting a test resullt
+
 ```python
 # predict a single test 
 classifier.predict(sc.transform([[30,87000]]))
 ```
 
-## Predict Test results
+### Predict Test results
+
 ```python
 y_pred = classifier.predict(X_test)
 print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
 ```
 
-## Making the Confusion Matrix
+### Making the Confusion Matrix
+
 ```python
 from sklearn.metrics import confusion_matrix, accuracy_score
 cm = confusion_matrix(y_test,y_pred)
@@ -960,7 +1058,8 @@ print(acs)
 # ]
 ```
 
-## Visualising the Training set results
+### Visualising the Training set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_train), y_train
@@ -979,7 +1078,8 @@ plt.legend()
 plt.show()
 ```
 
-## Visualising the Test set results
+### Visualising the Test set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_test), y_test
@@ -997,10 +1097,8 @@ plt.ylabel('Estimated Salary')
 plt.legend()
 plt.show()
 ```
-<hr/>
-<hr/>
 
-> # K-Nearest Neighbour
+## K-Nearest Neighbour
 
 In this type of classification technique, we first select a value for K and then follow the below steps
 
@@ -1012,7 +1110,8 @@ $$ D_{Eucledian\ Distance} = \sqrt{(x_{2}-x_{1})^{2}+(y_{2}-y_{1})^{2}}$$
 5. Model is ready.
 
 
-## Loading and Preprocession Data
+### Loading and Preprocession Data
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -1051,7 +1150,8 @@ print(X_test)
 print(y_test)
 ```
 
-## Feature Scaling
+### Feature Scaling
+
 ```python
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
@@ -1063,26 +1163,30 @@ X_train = sc.transform(X_train)
 X_test = sc.transform(X_test)
 ```
 
-## Training the K Nearest Neighbour Model using Training Data
+### Training the K Nearest Neighbour Model using Training Data
+
 ```python
 from sklearn.neighbors import KNeighborsClassifier
 classifier = KNeighborsClassifier(n_neighbors = 5, metric = "minkowski", p = 2)
 classifier.fit(X_train,y_train)
 ```
 
-## Predicting a test resullt
+### Predicting a test resullt
+
 ```python
 # predict a single test 
 classifier.predict(sc.transform([[30,87000]]))
 ```
 
-## Predict Test results
+### Predict Test results
+
 ```python
 y_pred = classifier.predict(X_test)
 print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
 ```
 
-## Making the Confusion Matrix
+### Making the Confusion Matrix
+
 ```python
 from sklearn.metrics import confusion_matrix, accuracy_score
 cm = confusion_matrix(y_test,y_pred)
@@ -1096,7 +1200,8 @@ print(acs)
 # ]
 ```
 
-## Visualising the Training set results
+### Visualising the Training set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_train), y_train
@@ -1115,7 +1220,8 @@ plt.legend()
 plt.show()
 ```
 
-## Visualising the Test set results
+### Visualising the Test set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_test), y_test
@@ -1134,15 +1240,15 @@ plt.legend()
 plt.show()
 ```
 
-<hr/>
-<hr/>
+## Support Vector Classification
 
-> ## Support Vector Classification
 Support Vector Classification is a little bit different type of classification. It draws a **Hyper-Line/Hyper-Plane** between different categories, but instead of finding the best line differentiating between categories, it finds the point/dataset which is worst point and then draw a **Hyper-Line/Hyper-Plane** having maximum margin.
-<br/>
+
+
 Suppose we have one basket full of apples and one basket full of oranges. Now SVC will find an apple that is very much simillar to oranges, and an orange that is very much simillar to apple. Now SVC will find a **Hyper-Line/Hyper-Plane** that is giving highest margin between these points and use it to predict new datapoints.
 
-## Loading and Preprocession Data
+### Loading and Preprocession Data
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -1182,7 +1288,8 @@ print(y_test)
 ```
 
 
-## Feature Scaling
+### Feature Scaling
+
 ```python
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
@@ -1195,26 +1302,30 @@ X_test = sc.transform(X_test)
 ```
 
 
-## Training the SVC Model using Training Data
+### Training the SVC Model using Training Data
+
 ```python
 from sklearn.svm import SVC
 classifier = SVC(kernel = 'linear', random_state = 0)
 classifier.fit(X_train,y_train)
 ```
 
-## Predicting a test resullt
+### Predicting a test resullt
+
 ```python
 # predict a single test 
 classifier.predict(sc.transform([[30,87000]]))
 ```
 
-## Predict Test results
+### Predict Test results
+
 ```python
 y_pred = classifier.predict(X_test)
 print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
 ```
 
-## Making the Confusion Matrix
+### Making the Confusion Matrix
+
 ```python
 from sklearn.metrics import confusion_matrix, accuracy_score
 cm = confusion_matrix(y_test,y_pred)
@@ -1228,7 +1339,8 @@ print(acs)
 # ]
 ```
 
-## Visualising the Training set results
+### Visualising the Training set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_train), y_train
@@ -1247,7 +1359,8 @@ plt.legend()
 plt.show()
 ```
 
-## Visualising the Test set results
+### Visualising the Test set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_test), y_test
@@ -1266,18 +1379,16 @@ plt.legend()
 plt.show()
 ```
 
-<br/>
-<hr/>
-<br/>
+## Kernerl SVM
 
-> ## Kernerl SVM
 In Data Science, we are mainly dealing with Datasets. Now Datasets can be divided into two categories
+
 - **Linearly Separable Data points**
 : These data points can be easily seperated in different class/category using any hyperplane
 - **Non Linearly Separable Data points**
 : These data points can't be seperated in different class/category using any hyperplane
 
-**Support Vector Machine [SVM]** can easily process datasets having **linearly separable datapoints** to predict classes/categories for new data points, but for **non linearly separable** data points SVM can't draw any hyperplane.
+**Support Vector Machine [ SVM ]** can easily process datasets having **linearly separable datapoints** to predict classes/categories for new data points, but for **non linearly separable** data points SVM can't draw any hyperplane.
 
 There is a technique **Maping to a Higher Dimension** which can be used to draw a hyperplane between non linearly seperable data points. In this technique, dimension of datapoints is increased to a higher dimension by using some equations/transformation.
 Suppose we have two classes 1D datapoints
@@ -1294,11 +1405,12 @@ Now the resultant datapoints will be a hyperbola, and we can draw a line that wi
 
 Next, we can reproject our new datapoints in older dimension.
 
->But, **Maping to a High Dimension can be a highly compute-intensive**
+But, **Maping to a High Dimension can be a highly compute-intensive**
 
-<br/>
+
 
 ### The Kernel Trick
+
 The Gaussian RBF Kernel
 
 $$ K\left ( \vec{x}, \vec{l^{i}} \right ) = e^{- \left ( \frac{\left \| \vec{x} -\vec{l^{i}} \right \|}{ 2\sigma ^{2}} \right )} $$
@@ -1319,27 +1431,33 @@ $$ K_{1}\left ( \vec{x}, \vec{l^{1}} \right ) + K_{2}\left ( \vec{x}, \vec{l^{2}
 
 The above equation can predict for the **<span>&#8734;</span>** shape of data points 
 
-> ### Types of Kernel Function
+### Types of Kernel Function
+
 1. The Gaussian RBF Kernel
+
 $$ K\left ( \vec{x}, \vec{l^{i}} \right ) = e^{- \left ( \frac{\left \| \vec{x} -\vec{l^{i}} \right \|}{ 2\sigma ^{2}} \right )} $$
 
+
 2. The Sigmoid Kernel
+
 $$ K(X, Y) = \tanh (\gamma \cdot X^{T}Y + r) $$
 
 3. The Polynomial Kernel
+
 $$ K(X, Y) = (\gamma \cdot X^{T}Y + r)^{d}, \ \gamma > 0 $$
 
-<hr/>
-<img src="./Kernel_SVM/Kernel_functions.pdf.png"/>
-<hr/>
 
-## Non Linear Kernel SVR
-<hr/>
-<img src="./Kernel_SVM/Non_Linear_SVR.png"/>
-<hr/>
+<img src="./Classification/Kernel_SVM/Kernel_functions.pdf.png"/>
 
 
-## Loading and Preprocession Data
+### Non Linear Kernel SVR
+
+<img src="./Classification/Kernel_SVM/Non_Linear_SVR.png"/>
+
+
+
+### Loading and Preprocession Data
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -1379,7 +1497,8 @@ print(y_test)
 ```
 
 
-## Feature Scaling
+### Feature Scaling
+
 ```python
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
@@ -1392,26 +1511,30 @@ X_test = sc.transform(X_test)
 ```
 
 
-## Training the Kernel SVM Model using Training Data
+### Training the Kernel SVM Model using Training Data
+
 ```python
 from sklearn.svm import SVC
 classifier = SVC(kernel = 'rbf', random_state = 0)
 classifier.fit(X_train,y_train)
 ```
 
-## Predicting a test resullt
+### Predicting a test resullt
+
 ```python
 # predict a single test 
 classifier.predict(sc.transform([[30,87000]]))
 ```
 
-## Predict Test results
+### Predict Test results
+
 ```python
 y_pred = classifier.predict(X_test)
 print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
 ```
 
-## Making the Confusion Matrix
+### Making the Confusion Matrix
+
 ```python
 from sklearn.metrics import confusion_matrix, accuracy_score
 cm = confusion_matrix(y_test,y_pred)
@@ -1425,7 +1548,8 @@ print(acs)
 # ]
 ```
 
-## Visualising the Training set results
+### Visualising the Training set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_train), y_train
@@ -1444,7 +1568,8 @@ plt.legend()
 plt.show()
 ```
 
-## Visualising the Test set results
+### Visualising the Test set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_test), y_test
@@ -1463,11 +1588,9 @@ plt.legend()
 plt.show()
 ```
 
-<hr/>
-<br/>
 
-> ## Naive Bayes
-<br/>
+## Naive Bayes
+
 
 ### Bayes Theorem
 
@@ -1477,7 +1600,7 @@ $$ P(E_{i}\mid A) = \frac{P(E_{i}) \cdot P(A\mid E_{i})}{\sum_{k=1}^{n} P(E_{k})
 
 for any k = 1, 2, 3, … , n
 
-> Proof
+**Proof**
 
 <pre>Probability of A given that B has occured</pre>
 $$ P(A \mid B) = \frac{P(A \cap B)}{P(B)}  \; \; \; \; \; \; \; \; \; \;...\; (1)$$
@@ -1490,21 +1613,26 @@ $$ P(A \mid B) \cdot P(B) = P(A \cap B) = P(B \mid A) \cdot P(A) $$
 
 $$ P(A \mid B) \cdot P(B) = P(B \mid A) \cdot P(A) $$
 
->  $$ P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)} $$
+$$ P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)} $$
 
 
 Example, 
-<br/>
+
 
 Let's have two machines M<sub>1</sub> and M<sub>2</sub>, that builds Bolts. 
+
 M<sub>1</sub> can built 30 Bolts and M<sub>2</sub> can build 20 Bolts per second respectively. 1% of the total bolts are defective, Also it was given that the chance of building defective bolts for each machine is 50%.
 
 Now,
                     
 $$ P(M_{1})  =\  \frac{30}{20+30} =\  \frac{30}{50} =\  0.6 $$
+
 $$ P(M_{2})  =\  \frac{20}{20+30} =\  \frac{20}{50} =\  0.4 $$
+
 $$ P(Defected)  =\  0.01 $$
+
 $$ P(M_{1} \mid Defected)  =\  0.5 $$
+
 $$ P(M_{2} \mid Defected)  =\  0.5 $$
 
 <pre>P(Event A | Event B) means probability of Event A, if Event B is given </pre>
@@ -1515,69 +1643,64 @@ Using Bayes Theorem
 
 $$ P(Defected \mid M_{1}) = \frac{P(M_{1} \mid Defected) \cdot P(Defected)}{P(M_{1} \mid Defected)+P(M_{1} \mid Not\ Defected)} $$
 
-<br/>
 
 $$ P(Defected \mid M_{1}) = \frac{P(M_{1} \mid Defected) \cdot P(Defected)}{P(M_{1})} $$
 
-<br/>
 
 $$ P(Defected \mid M_{1}) = \frac{0.01 * 0.5}{0.4} $$
 
 $$ P(Defected \mid M_{1}) = 0.0125 $$
 
-<br/>
-
 $$ P(Defected \mid M_{2}) = \frac{0.01 * 0.5}{0.6} $$
 
 $$ P(Defected \mid M_{2}) = 0.075 $$
 
-> ## Naive Bayes Classifier
+### Naive Bayes Classifier
 
 This classifier usages Bayes Theorem to predict the class of new data point
 
->  $$ P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)} $$
+$$ P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)} $$
 
 This Classification works in three step
 
 Step 1) Find the probability that new datapoint belongs to class A
+
 Step 2) Find the probability that new datapoint belongs to class B
+
 Step 3) Compare probabilities and predict the class of new data point.
 
 Given a set of datapoints, Red and Green. Find the class of new datapoint (Gray).
-<img src="./Naive_Bayes_Classifier/problem_statement.png">
+<img src="./Classification/Naive_Bayes_Classifier/problem_statement.png">
 
-> **Step 1 : Calculate P(Walks|X)**
+**Step 1 : Calculate P(Walks|X)**
+<img src="./Classification/Naive_Bayes_Classifier/Step_1.1.png">
 
-<img src="./Naive_Bayes_Classifier/Step_1.1.png">
+1. P(Walks) [ Prior Probability ]
+<img src="./Classification/Naive_Bayes_Classifier/Step_1.2.png">
 
-**#1 P(Walks) [ Prior Probability ]**
-<img src="./Naive_Bayes_Classifier/Step_1.2.png">
+2. P(X|Walks) [ Likelihood ]
+: Draw a circle around the new data point, **Observation Circle**
+<img src="./Classification/Naive_Bayes_Classifier/Step_1.3.png">
 
-**#2 P(X|Walks) [ Likelihood ]**
-> Draw a circle around the new data point, **Observation Circle**
+3. P(X) [ Marginal Likelihood ]
+<img src="./Classification/Naive_Bayes_Classifier/Step_1.4.png">
 
-<img src="./Naive_Bayes_Classifier/Step_1.3.png">
+4. P(Walks|X) [ Posterior Probability ]
+<img src="./Classification/Naive_Bayes_Classifier/Step_1.5.png">
 
-**#3 P(X) [ Marginal Likelihood ]**
-<img src="./Naive_Bayes_Classifier/Step_1.4.png">
+**Step 2 : Calculate P(Drives|X)**
+<img src="./Classification/Naive_Bayes_Classifier/Step_2.png">
 
-**#4 P(Walks|X) [ Posterior Probability ]**
-<img src="./Naive_Bayes_Classifier/Step_1.5.png">
-
-> **Step 2 : Calculate P(Drives|X)**
-
-<img src="./Naive_Bayes_Classifier/Step_2.png">
-
-> **Step 3 : Compare P(Walks|X) and P(Drives|X)**
+**Step 3 : Compare P(Walks|X) and P(Drives|X)**
 <pre>
 P(Walks|X) v.s. P(Drives|X)
 0.75 v.s. 0.25
 0.75 > 0.25
 </pre>
 
-> **It means the new datapoint is going to Red Class**
+**It means the new datapoint is going to Red Class**
 
-> In the Step 3
+In the Step 3
 
 $$ P(Walks \mid X) \; \; v.s. \; \; P(Drives \mid X) $$
 
@@ -1587,10 +1710,11 @@ P(X) can be discarded
 
 $$ \frac { P(X \mid Walks) \cdot P(Walks)} { \xcancel{P(X)} } \; \; v.s. \; \; \frac { P(X \mid Drives) \cdot P(Drives)} {\xcancel{P(X)} } $$
 
-> $$ P(X \mid Walks) \cdot P(Walks) \; \; v.s. \; \; P(X \mid Drives) \cdot P(Drives) $$
+$$ P(X \mid Walks) \cdot P(Walks) \; \; v.s. \; \; P(X \mid Drives) \cdot P(Drives) $$
 
 
-## Loading and Preprocession Data
+### Loading and Preprocession Data
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -1630,7 +1754,8 @@ print(y_test)
 ```
 
 
-## Feature Scaling
+### Feature Scaling
+
 ```python
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
@@ -1643,26 +1768,30 @@ X_test = sc.transform(X_test)
 ```
 
 
-## Training the Naive Bayes Classifier Model using Training Data
+### Training the Naive Bayes Classifier Model using Training Data
+
 ```python
 from sklearn.naive_bayes import GaussianNB
 classifier = GaussianNB()
 classifier.fit(X_train,y_train)
 ```
 
-## Predicting a test resullt
+### Predicting a test resullt
+
 ```python
 # predict a single test 
 classifier.predict(sc.transform([[30,87000]]))
 ```
 
-## Predict Test results
+### Predict Test results
+
 ```python
 y_pred = classifier.predict(X_test)
 print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
 ```
 
-## Making the Confusion Matrix
+### Making the Confusion Matrix
+
 ```python
 from sklearn.metrics import confusion_matrix, accuracy_score
 cm = confusion_matrix(y_test,y_pred)
@@ -1676,7 +1805,8 @@ print(acs)
 # ]
 ```
 
-## Visualising the Training set results
+### Visualising the Training set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_train), y_train
@@ -1695,7 +1825,8 @@ plt.legend()
 plt.show()
 ```
 
-## Visualising the Test set results
+### Visualising the Test set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_test), y_test
@@ -1714,22 +1845,20 @@ plt.legend()
 plt.show()
 ```
 
-<br/>
-<hr/>
-<br/>
 
-> ## Decision Tree Classification
+## Decision Tree Classification
 
 In the below set of data points, we can use some filters to draw a decision tree, and decide the color/class of new data point
 
-<img src="./Decision_Tree_Classification/DTC_datapoints.png" />
+<img src="./Classification/Decision_Tree_Classification/DTC_datapoints.png" />
 
 The generated decision tree will be
 
-<img src="./Decision_Tree_Classification/DTC_decision_tree.png" />
+<img src="./Classification/Decision_Tree_Classification/DTC_decision_tree.png" />
 
 
-## Loading and Preprocession Data
+### Loading and Preprocession Data
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -1769,7 +1898,8 @@ print(y_test)
 ```
 
 
-## Feature Scaling
+### Feature Scaling
+
 ```python
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
@@ -1782,26 +1912,30 @@ X_test = sc.transform(X_test)
 ```
 
 
-## Training the Decision Tree Classification Model using Training Data
+### Training the Decision Tree Classification Model using Training Data
+
 ```python
 from sklearn.tree import DecisionTreeClassifier
 classifier = DecisionTreeClassifier(criterion = 'entropy', random_state = 0)
 classifier.fit(X_train,y_train)
 ```
 
-## Predicting a test resullt
+### Predicting a test resullt
+
 ```python
 # predict a single test 
 classifier.predict(sc.transform([[30,87000]]))
 ```
 
-## Predict Test results
+### Predict Test results
+
 ```python
 y_pred = classifier.predict(X_test)
 print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
 ```
 
-## Making the Confusion Matrix
+### Making the Confusion Matrix
+
 ```python
 from sklearn.metrics import confusion_matrix, accuracy_score
 cm = confusion_matrix(y_test,y_pred)
@@ -1815,7 +1949,8 @@ print(acs)
 # ]
 ```
 
-## Visualising the Training set results
+### Visualising the Training set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_train), y_train
@@ -1834,7 +1969,8 @@ plt.legend()
 plt.show()
 ```
 
-## Visualising the Test set results
+### Visualising the Test set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_test), y_test
@@ -1853,17 +1989,13 @@ plt.legend()
 plt.show()
 ```
 
-
-<br/>
-<hr/>
-<br/>
-
 ## Random Forest Classification
 
-<img src="./Random_Forest_Classification/RF_steps.png"/>
+<img src="./Classification/Random_Forest_Classification/RF_steps.png"/>
 
 
-## Loading and Preprocession Data
+### Loading and Preprocession Data
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -1903,7 +2035,8 @@ print(y_test)
 ```
 
 
-## Feature Scaling
+### Feature Scaling
+
 ```python
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
@@ -1916,26 +2049,30 @@ X_test = sc.transform(X_test)
 ```
 
 
-## Training the Random Forest Classification Model using Training Data
+### Training the Random Forest Classification Model using Training Data
+
 ```python
 from sklearn.tree import DecisionTreeClassifier
 classifier = DecisionTreeClassifier(criterion = 'entropy', random_state = 0)
 classifier.fit(X_train,y_train)
 ```
 
-## Predicting a test resullt
+### Predicting a test resullt
+
 ```python
 # predict a single test 
 classifier.predict(sc.transform([[30,87000]]))
 ```
 
-## Predict Test results
+### Predict Test results
+
 ```python
 y_pred = classifier.predict(X_test)
 print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
 ```
 
-## Making the Confusion Matrix
+### Making the Confusion Matrix
+
 ```python
 from sklearn.metrics import confusion_matrix, accuracy_score
 cm = confusion_matrix(y_test,y_pred)
@@ -1949,7 +2086,8 @@ print(acs)
 # ]
 ```
 
-## Visualising the Training set results
+### Visualising the Training set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_train), y_train
@@ -1968,7 +2106,8 @@ plt.legend()
 plt.show()
 ```
 
-## Visualising the Test set results
+### Visualising the Test set results
+
 ```python
 from matplotlib.colors import ListedColormap
 X_set, y_set = sc.inverse_transform(X_test), y_test
@@ -1987,12 +2126,11 @@ plt.legend()
 plt.show()
 ```
 
-
 <br/>
 <hr/>
 <br/>
 
-# Selecting best classification model
+> # Selecting best classification model
 
 ## Loading and Preprocession Data
 
@@ -2154,38 +2292,34 @@ for score in Score:
 ```
 
 
-<br/>
-<hr/>
-<br/>
+## Evaluating Model Performances
 
-# Evaluating Model Performances
+### False Positive and False Negative
 
-## False Positive and False Negative
+<img src="./Classification/Evaluating_Model_Performances/False_Positive_False_Negative.png"/>
 
-<img src="./Evaluating_Model_Performances/False_Positive_False_Negative.png"/>
+### Confusion Matrix
 
-## Confusion Matrix
-
-<img src="./Evaluating_Model_Performances/Confusion_Matrix.png"/>
+<img src="./Classification/Evaluating_Model_Performances/Confusion_Matrix.png"/>
 
 
-## Accuracy Paradox
+### Accuracy Paradox
 
-<img src="./Evaluating_Model_Performances/Accuracy_Paradox_1.png"/>
+<img src="./Classification/Evaluating_Model_Performances/Accuracy_Paradox_1.png"/>
 
 Now if in this scenario we only predict 0, means replace every 1 with 0 in prediction, the resultant accuracy rate will be
 
-<img src="./Evaluating_Model_Performances/Accuracy_Paradox_2.png"/>
+<img src="./Classification/Evaluating_Model_Performances/Accuracy_Paradox_2.png"/>
 
 This is known as **Accuracy Paradox**, Accuracy rate shows that the accuracy of model is increased, but in actual it's getting vorse.
 
-## Cap Curve
+### Cap Curve
 
 Suppose we have a list of customer data [Who purchased, who not purchased], according to data only 10% customer purchased the product.
 
 Now in the below diagram
 
-<img src="./Evaluating_Model_Performances/CAP_1.png"/>
+<img src="./Classification/Evaluating_Model_Performances/CAP_1.png"/>
 
 - Blue Line : Randomly sent advertisement/invitation to the all customer.
 - Green Line : Using some classification/regression algorithm, advertisement/invitation were sent to only those customer, who can purchase the product.
@@ -2193,93 +2327,97 @@ Now in the below diagram
 - Gray Line : If it was already known, who is goin to purchase the product, and advertisement/invitation is sent only those customers.
 
 
-<img src="./Evaluating_Model_Performances/CAP_2.png"/>
+<img src="./Classification/Evaluating_Model_Performances/CAP_2.png"/>
 
-## CAP Analysis
+### CAP Analysis
 
 Now using CAP curve
-<img src="./Evaluating_Model_Performances/CAP_Analysis_1.png"/>
+<img src="./Classification/Evaluating_Model_Performances/CAP_Analysis_1.png"/>
 
-> ### a<sub>P</sub> : Area under the Random model and Perfect Model
+#### a<sub>P</sub> : Area under the Random model and Perfect Model
 
-> ### a<sub>R</sub> : Area under the Random model and Good Model
+#### a<sub>R</sub> : Area under the Random model and Good Model
 
-> $$ AR = \frac{a_{R}} {a_{P}} $$
+$$ AR = \frac{a_{R}} {a_{P}} $$
 
 The above method to compute Accuracy Rate, is very complex because finding area under the curve is a complex process.
 
 There exist one more method to calculate AR
 
-<img src="./Evaluating_Model_Performances/CAP_Analysis_2.png"/>
+<img src="./Classification/Evaluating_Model_Performances/CAP_Analysis_2.png"/>
 
 > Note : X > 90%, means model is over fitted. 
 
 ## Classification Pros and Cons
 
-<img src="./Evaluating_Model_Performances/Classification_Pros_Cons.png"/>
+<img src="./Classification/Evaluating_Model_Performances/Classification_Pros_Cons.png"/>
 
 <br/>
 <hr/>
 <br/>
 
-# Clustering
+> # Clustering
 
 Clustering is a technique, to make some new groups/cluster from a given data points.
 
 ## K-Mean Clustering
 
-<img src="./K_Mean_Clustering/K_Mean_1.png" />
+<img src="./Clustering/K_Mean_Clustering/K_Mean_1.png" />
 
 **Steps for the K-Mean Clustering**
 
-<img src="./K_Mean_Clustering/K_Mean_Steps.png" />
+<img src="./Clustering/K_Mean_Clustering/K_Mean_Steps.png" />
 
 Let's apply above algorithm on a set of data points, and take K as 2.
 
-<img src="./K_Mean_Clustering/K_Mean_Step_1.png"/>
+<img src="./Clustering/K_Mean_Clustering/K_Mean_Step_1.png"/>
 
-<img src="./K_Mean_Clustering/K_Mean_Step_2.png"/>
+<img src="./Clustering/K_Mean_Clustering/K_Mean_Step_2.png"/>
 
-<img src="./K_Mean_Clustering/K_Mean_Step_3.png"/>
+<img src="./Clustering/K_Mean_Clustering/K_Mean_Step_3.png"/>
 
-<img src="./K_Mean_Clustering/K_Mean_Step_4.png"/>
+<img src="./Clustering/K_Mean_Clustering/K_Mean_Step_4.png"/>
 
-<img src="./K_Mean_Clustering/K_Mean_Step_5.png"/>
+<img src="./Clustering/K_Mean_Clustering/K_Mean_Step_5.png"/>
 
-<img src="./K_Mean_Clustering/K_Mean_Step_6.png"/>
+<img src="./Clustering/K_Mean_Clustering/K_Mean_Step_6.png"/>
 
-<img src="./K_Mean_Clustering/K_Mean_Step_7.png"/>
+<img src="./Clustering/K_Mean_Clustering/K_Mean_Step_7.png"/>
 
-<img src="./K_Mean_Clustering/K_Mean_Step_8.png"/>
+<img src="./Clustering/K_Mean_Clustering/K_Mean_Step_8.png"/>
 
-<img src="./K_Mean_Clustering/K_Mean_Step_9.png"/>
+<img src="./Clustering/K_Mean_Clustering/K_Mean_Step_9.png"/>
 
-<img src="./K_Mean_Clustering/K_Mean_Step_10.png"/>
+<img src="./Clustering/K_Mean_Clustering/K_Mean_Step_10.png"/>
 
 In this way, the K-Mean Clustering works.
 
-> ### Random Initialization Trap : If somehow we select very bad initial K centroids, the result may vary. To avoid this issue instead of K-Mean Clustering , K-Mean++ Clustering is used.
-<br/>
+**Random Initialization Trap : If somehow we select very bad initial K centroids, the result may vary. To avoid this issue instead of K-Mean Clustering , K-Mean++ Clustering is used.**
 
 ### Choosing right number of cluster [The Elbow Technique]
+
 In any dataset, we can have minimum one cluster, and maximum N cluster, N is the total data points.
 
 In the first step we need to select the value of K, For better selection we can use **Within Cluster Sum of Squares (WCSS)** technique
 
 $$ WCSS = \sum_{i=1}^{K} \sum_{j=1}^{N_{i}} Distance(C_{i},P_{ij})^{2} $$
+
 $$ K : No \ \  of \ Clusters $$
+
 $$ N_{i} :  No \ \  of \ Points \  inside \ i^{th} \  Cluster $$
+
 $$ C_{i} : Centroid \ \  of \ i^{th} \  Cluster $$
+
 $$ P_{ij} :  j^{th} \ Point \ \  inside \ i^{th} \  Cluster $$
 
 For below datapoints
 
 - K = 1
-<img src="./K_Mean_Clustering/Choose_K_1.png"/>
+<img src="./Clustering/K_Mean_Clustering/Choose_K_1.png"/>
 - K = 2
-<img src="./K_Mean_Clustering/Choose_K_2.png"/>
+<img src="./Clustering/K_Mean_Clustering/Choose_K_2.png"/>
 - K = 3
-<img src="./K_Mean_Clustering/Choose_K_3.png"/>
+<img src="./Clustering/K_Mean_Clustering/Choose_K_3.png"/>
 
 As we increase K, value of WCSS keeps decreasing, **Inversly Proportinal**
 
@@ -2287,13 +2425,14 @@ $$ WCSS \propto \frac {1} {K} $$
 
 Below is the graph between **WCSS vs K**
 
-<img src="./K_Mean_Clustering/WCSS_Graph.png"/>
+<img src="./Clustering/K_Mean_Clustering/WCSS_Graph.png"/>
 
 The shape of the graph is very simillar to a human hand, and it was found that the point near elbow of the graph is the best value of K.
 
-<img src="./K_Mean_Clustering/WCSS_Graph_Elbow.png"/>
+<img src="./Clustering/K_Mean_Clustering/WCSS_Graph_Elbow.png"/>
 
 ### Data Preprocessing
+
 ```python
 # Data Preprocessing
 
@@ -2309,6 +2448,7 @@ print(X)
 ```
 
 ### The Elbow Method
+
 ```python
 from sklearn.cluster import KMeans
 wcss = []
@@ -2327,6 +2467,7 @@ From below graph, it is clear that K = 5 is the optimal value
 ```
 
 ### Training the K-Means Clustering Model on Training Dataset
+
 ```python
 K = 5
 kmeans = KMeans(n_clusters = K, init = 'k-means++', random_state = 42)
@@ -2335,6 +2476,7 @@ print(y_kmeans)
 ```
 
 ### Visualizing the cluster
+
 ```python
 plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s = 50, c = 'red', label =  'Cluster 1')
 plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s = 50, c = 'blue', label =  'Cluster 2')
@@ -2350,10 +2492,6 @@ plt.legend()
 plt.show()
 ```
 
-<br/>
-<hr/>
-<br/>
-
 ## Hierarchical Clustering
 
 Output will be simillar to the K-Means Clustering, but process is different
@@ -2362,34 +2500,34 @@ Types of Hierarchical Clustering
 1. Agglomerative Hierarchical Clustering
 2. Divisive Hierarchical Clustering
 
-> ### Agglomerative Hierarchical Clustering
+### Agglomerative Hierarchical Clustering
 
-<img src="./Hierarchical_Clustering/Agglomerative_HC_steps.png" />
+<img src="./Clustering/Hierarchical_Clustering/Agglomerative_HC_steps.png" />
 
-<img src="./Hierarchical_Clustering/Distance_BW_Clusters.png" />
+<img src="./Clustering/Hierarchical_Clustering/Distance_BW_Clusters.png" />
 
 Let's apply Agglomerative Hierarchical Clustering steps on below data points
-<img src="./Hierarchical_Clustering/Agglomerative_HC_step_0.png" />
+<img src="./Clustering/Hierarchical_Clustering/Agglomerative_HC_step_0.png" />
 
 
 
 
-<img src="./Hierarchical_Clustering/Agglomerative_HC_step_1.png" />
+<img src="./Clustering/Hierarchical_Clustering/Agglomerative_HC_step_1.png" />
 
 
-<img src="./Hierarchical_Clustering/Agglomerative_HC_step_2.png" />
+<img src="./Clustering/Hierarchical_Clustering/Agglomerative_HC_step_2.png" />
 
 
-<img src="./Hierarchical_Clustering/Agglomerative_HC_step_3.png" />
+<img src="./Clustering/Hierarchical_Clustering/Agglomerative_HC_step_3.png" />
 
 
-<img src="./Hierarchical_Clustering/Agglomerative_HC_step_4.png" />
+<img src="./Clustering/Hierarchical_Clustering/Agglomerative_HC_step_4.png" />
 
 
-<img src="./Hierarchical_Clustering/Agglomerative_HC_step_5.png" />
+<img src="./Clustering/Hierarchical_Clustering/Agglomerative_HC_step_5.png" />
 
 
-<img src="./Hierarchical_Clustering/Agglomerative_HC_step_6.png" />
+<img src="./Clustering/Hierarchical_Clustering/Agglomerative_HC_step_6.png" />
 
 **Agglomerative Clustering** remembers the process by which one huge cluster is created, this process is stored in the memory in the form of **Dendrograms**.
 
@@ -2398,55 +2536,55 @@ These are basically a graph simillar to bar chart that is plotted b/w datapoints
 
 ### How to Draw Dendrograms
 Let's convert below datpoints/clusters into Dendrograms
-<img src="./Hierarchical_Clustering/Dendrograms_0.png" />
+<img src="./Clustering/Hierarchical_Clustering/Dendrograms_0.png" />
 
-> [ P<sub>2</sub> ] + [ P<sub>3</sub> ]
-<img src="./Hierarchical_Clustering/Dendrograms_1.png" />
+- [ P<sub>2</sub> ] + [ P<sub>3</sub> ]
+<img src="./Clustering/Hierarchical_Clustering/Dendrograms_1.png" />
 **Height of any bar is the Eucledian Distance/Disimilarity b/w the two clusters**
 
-> [ P<sub>5</sub> ] + [ P<sub>6</sub> ]
-<img src="./Hierarchical_Clustering/Dendrograms_2.png" />
+- [ P<sub>5</sub> ] + [ P<sub>6</sub> ]
+<img src="./Clustering/Hierarchical_Clustering/Dendrograms_2.png" />
 
-> [ P<sub>2</sub>, P<sub>3</sub> ] + [ P<sub>1</sub> ]
-<img src="./Hierarchical_Clustering/Dendrograms_3.png" />
+- [ P<sub>2</sub>, P<sub>3</sub> ] + [ P<sub>1</sub> ]
+<img src="./Clustering/Hierarchical_Clustering/Dendrograms_3.png" />
 
-> [ P<sub>5</sub>, P<sub>6</sub> ] + [ P<sub>4</sub> ]
-<img src="./Hierarchical_Clustering/Dendrograms_4.png" />
+- [ P<sub>5</sub>, P<sub>6</sub> ] + [ P<sub>4</sub> ]
+<img src="./Clustering/Hierarchical_Clustering/Dendrograms_4.png" />
 
-> [ P<sub>1</sub>, P<sub>2</sub>, P<sub>3</sub> ] + [ P<sub>4</sub>, P<sub>5</sub>, P<sub>6</sub> ]
-<img src="./Hierarchical_Clustering/Dendrograms_5.png" />
+- [ P<sub>1</sub>, P<sub>2</sub>, P<sub>3</sub> ] + [ P<sub>4</sub>, P<sub>5</sub>, P<sub>6</sub> ]
+<img src="./Clustering/Hierarchical_Clustering/Dendrograms_5.png" />
 
 And Finally,
-> [ P<sub>1</sub>, P<sub>2</sub>, P<sub>3</sub>, P<sub>4</sub>, P<sub>5</sub>, P<sub>6</sub> ]
-<img src="./Hierarchical_Clustering/Dendrograms_6.png" />
+- [ P<sub>1</sub>, P<sub>2</sub>, P<sub>3</sub>, P<sub>4</sub>, P<sub>5</sub>, P<sub>6</sub> ]
+<img src="./Clustering/Hierarchical_Clustering/Dendrograms_6.png" />
 
 
 ### How to Use Dendrograms
 
 Let's assume all the bars have their horizontal line, starting from 0, then our dendrogram will look like
-<img src="./Hierarchical_Clustering/Dendrograms_HL.png" />
+<img src="./Clustering/Hierarchical_Clustering/Dendrograms_HL.png" />
 
 Now we have two types of lines in the graph
 1. Horizontal lines
 2. Vertical lines
 
 Select Longest vertical line, that is not crossing any Horizontal line, reference vertical line.
-<img src="./Hierarchical_Clustering/Dendrograms_HLM.png" />
+<img src="./Clustering/Hierarchical_Clustering/Dendrograms_HLM.png" />
 
 Now, draw a Horizontal line from the center of  reference vertical line and extend it from 0 to max, this new Horizontal line is basically the maximum allowed Disimilarity between clusters. let's say it reference horizontal line.
-<img src="./Hierarchical_Clustering/Dendrograms_V_HL.png" />
+<img src="./Clustering/Hierarchical_Clustering/Dendrograms_V_HL.png" />
 
 Now, no of vertical lines that are crossed by the reference horizontal line, are the no of cluster for the given datapoints
-<img src="./Hierarchical_Clustering/Dendrograms_2_CL.png" />
+<img src="./Clustering/Hierarchical_Clustering/Dendrograms_2_CL.png" />
 
 We are getting two cluster for above datasets, where maximum allowed disimilarity is 1.7.
 
 
-<img src="./Hierarchical_Clustering/Dendrograms_2_CL.png" />
+<img src="./Clustering/Hierarchical_Clustering/Dendrograms_2_CL.png" />
 
 We are getting three cluster for above datasets, where maximum allowed disimilarity is 2.5.
 
-
+### Data Preprocessing
 ```python
 # Data Preprocessing
 
@@ -2508,12 +2646,13 @@ plt.show()
 <hr/>
 <br/>
 
-# Association Rule Learning
+> # Association Rule Learning
 let's take below statements
+<pre>
+Person Who watched Movie1 also watches Movie2.
 
->Person Who watched Movie1 also watches Movie2.
-
->Person Who bought product1 also buys product2.
+Person Who bought product1 also buys product2.
+</pre>
 
 The above two statement are in the form 
 
@@ -2558,7 +2697,8 @@ This is known as Apriori Lift.
 
 $$ Apriori \ Lift \ for \ M_{1} \rightarrow M_{2} = \frac{17.5\%}{10\%} = 1.75% $$
 
-> Steps for Apriori Algoritnms
+**Steps for Apriori Algoritnms**
+
 <img src="./Association_Rule_Learning/Apriori_Algorithm/Apriori_Steps.png"/>
 
 ```python
@@ -2577,22 +2717,22 @@ for i in range(dataset.shape[0]):
 # print(transactions)
 ```
 
-## Training Apriori Model on the dataset
+### Training Apriori Model on the dataset
 
 ```python
 from apyori import apriori
 rules = apriori(transactions = transactions, min_support = 0.003, min_confidence = 0.2, min_lift = 3, min_length = 2, max_length = 2)
 ```
 
-## Visualizing the results
+### Visualizing the results
 
-### Displaying the firsts result directly comming from apriori funtion
+#### Displaying the firsts result directly comming from apriori funtion
 ```python
 results = list(rules)
 print(results)
 ```
 
-### Putting the results well organised into a pandas dataframe
+#### Putting the results well organised into a pandas dataframe
 ```python
 def inspect(results):
     lhs         = [tuple(result[2][0][0])[0] for result in results]
@@ -2604,12 +2744,12 @@ def inspect(results):
 resultsinDataFrame = pd.DataFrame(inspect(results), columns = ['Left Hand Side', 'Right Hand Side', 'Support', 'Confidence', 'Lift'])
 ```
 
-### Displaying the result non sorted
+#### Displaying the result non sorted
 ```python
 print(resultsinDataFrame)
 ```
 
-### Displaying the result in descending order by Lift
+#### Displaying the result in descending order by Lift
 ```python
 print(resultsinDataFrame.nlargest(n=10,columns = 'Lift'))
 ```
