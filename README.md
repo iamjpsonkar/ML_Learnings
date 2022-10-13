@@ -2753,3 +2753,86 @@ print(resultsinDataFrame)
 ```python
 print(resultsinDataFrame.nlargest(n=10,columns = 'Lift'))
 ```
+
+
+## ECLAT Association Rule Learning
+
+Eclat, is very simillar to Apriori Algorithm. It is a simpler form of Apriori Algorithm.
+
+This also works as a recommendation system.
+
+In Apriori Algorithm, we work on potential rules
+
+$$ A \rightarrow B  $$
+
+However, in ECLAT, we basically work on sets, So if we have,
+
+$$ S_{1} = \{ A,B,C \} $$
+$$ S_{2} = \{ A,B,D \} $$
+$$ S_{3} = \{ C,E,D \} $$
+$$ S_{4} = \{ A,E,B \} $$
+$$ S_{5} = \{ A,B \} $$
+
+On the basis of above 6 sets, we can see A and B are 100% times in the same set, So we can Reccomend A and B together.
+
+In Eclat, we only have Support, **Eclat Support**
+
+<img src="./Association_Rule_Learning/Eclat/Eclat_Support.png" />
+
+**Where M and I are set of items**
+
+Steps for Eclat
+
+<img src="./Association_Rule_Learning/Eclat/Eclat_Steps.png" />
+
+
+```python
+# Importing Libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Importing Datasets
+dataset = pd.read_csv("./Datasets/Market_Basket_Optimisation.csv", header = None)
+
+transactions = []
+for i in range(dataset.shape[0]):
+    transactions.append([str(dataset.values[i, j]) for j in range(dataset.shape[1])])
+
+# print(transactions)
+```
+
+### Training Eclat Model on the dataset
+
+```python
+from apyori import apriori
+rules = apriori(transactions = transactions, min_support = 0.003, min_confidence = 0.2, min_lift = 3, min_length = 2, max_length = 2)
+```
+
+### Visualizing the results
+
+#### Displaying the firsts result directly comming from apriori funtion
+```python
+results = list(rules)
+print(results)
+```
+
+#### Putting the results well organised into a pandas dataframe
+```python
+def inspect(results):
+    lhs         = [tuple(result[2][0][0])[0] for result in results]
+    rhs         = [tuple(result[2][0][1])[0] for result in results]
+    supports    = [result[1] for result in results]
+    return list(zip(lhs, rhs, supports))
+resultsinDataFrame = pd.DataFrame(inspect(results), columns = ['Product 1', 'Product 2', 'Support'])
+```
+
+#### Displaying the result non sorted
+```python
+print(resultsinDataFrame)
+```
+
+#### Displaying the result in descending order by Support
+```python
+print(resultsinDataFrame.nlargest(n=10,columns = 'Support'))
+```
