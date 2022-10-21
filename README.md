@@ -2905,3 +2905,63 @@ plt.xlabel('Ads')
 plt.ylabel('No of times each ads selected')
 plt.show()
 ```
+
+### Thompson Sampling Algorithm
+
+<img src="./Reinforcement_Learning/Thompson_Sampling_Algorithm/Bayesian_Inference.png"/>
+
+<img src="./Reinforcement_Learning/Thompson_Sampling_Algorithm/Thompson_Sampling.png"/>
+
+#### Upper Confidence Bound vs Thompson Sampling
+
+<img src="./Reinforcement_Learning/Upper_Confidence_Bound_vs_Thompson_Sampling.png"/>
+
+#### Importing modules and Datasets
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+dataset = pd.read_csv("./Datasets/Ads_CTR_Optimisation.csv")
+X =  dataset.iloc[:,:-1].values
+y = dataset.iloc[:,-1].values
+
+print(X)
+print(y)
+```
+
+#### Implementing Thompson Sampling Algorithm
+```python
+import random
+N = dataset.shape[0] #10000
+d = dataset.shape[1] #10
+ads_selected = []
+no_of_rewards_1 = [0] * d
+no_of_rewards_0 = [0] * d
+total_reward = 0
+for n in range(N):
+    ad = 0
+    max_random = 0
+    for i in range(d):
+        random_beta = random.betavariate(no_of_rewards_1[i] + 1, no_of_rewards_0[i] + 1)
+        if random_beta > max_random:
+            max_random = random_beta
+            ad = i
+    ads_selected.append(ad)
+    reward = dataset.values[n,ad]
+    if reward == 0:
+        no_of_rewards_0[ad]+=1
+    else:
+        no_of_rewards_1[ad]+=1
+    total_reward += reward
+```
+
+#### Visualize the results
+```python
+plt.hist(ads_selected)
+plt.title('Histogram of ads selection')
+plt.xlabel('Ads')
+plt.ylabel('No of times each ads selected')
+plt.show()
+```
+
