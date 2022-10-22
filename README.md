@@ -2962,7 +2962,7 @@ plt.show()
 ```
 
 
-### Upper Confidence Bound vs Thompson Sampling
+## Upper Confidence Bound vs Thompson Sampling
 
 <img src="./Reinforcement_Learning/Upper_Confidence_Bound_vs_Thompson_Sampling.png"/>
 
