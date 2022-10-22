@@ -2842,17 +2842,17 @@ print(resultsinDataFrame.nlargest(n=10,columns = 'Support'))
 <hr/>
 <br/>
 
-## Reinforcement Learning
+# Reinforcement Learning
 
-### The Multi Arm Bandit Problem
+## The Multi Arm Bandit Problem
 Suppose you have 10 ads for a product, now you distribute yours ads for the advertisement. You are randomly, distributing your ads, but this is not an efficient way, you should have the distribution according to the audience preference, So you must know which ads is good, and which is not. 
 
 <img src="./Reinforcement_Learning/The_Multi_Armed_Bandit_Problem.png"/>
 
-### Upper Confiednce Bound Algorithm
+## Upper Confiednce Bound Algorithm
 <img src="./Reinforcement_Learning/Upper_Confiednce_Bound_Algorithm/Upper_Confiednce_Bound_Algorithm.png"/>
 
-#### importing modules and Datasets
+### importing modules and Datasets
 ```python
 # importing modules and Datasets
 import numpy as np
@@ -2867,7 +2867,7 @@ print(X)
 print(y)
 ```
 
-#### Implementing Upper Confidence Bound (UCB)
+### Implementing Upper Confidence Bound (UCB)
 ```python
 import math
 N = dataset.shape[0] #10000
@@ -2897,7 +2897,7 @@ for n in range(N):
     total_reward += reward
 ```
 
-#### Visualize the result
+### Visualize the result
 ```python
 plt.hist(ads_selected)
 plt.title('Histogram of ads selection')
@@ -2906,17 +2906,13 @@ plt.ylabel('No of times each ads selected')
 plt.show()
 ```
 
-### Thompson Sampling Algorithm
+## Thompson Sampling Algorithm
 
 <img src="./Reinforcement_Learning/Thompson_Sampling_Algorithm/Bayesian_Inference.png"/>
 
 <img src="./Reinforcement_Learning/Thompson_Sampling_Algorithm/Thompson_Sampling.png"/>
 
-#### Upper Confidence Bound vs Thompson Sampling
-
-<img src="./Reinforcement_Learning/Upper_Confidence_Bound_vs_Thompson_Sampling.png"/>
-
-#### Importing modules and Datasets
+### Importing modules and Datasets
 ```python
 import numpy as np
 import pandas as pd
@@ -2930,7 +2926,7 @@ print(X)
 print(y)
 ```
 
-#### Implementing Thompson Sampling Algorithm
+### Implementing Thompson Sampling Algorithm
 ```python
 import random
 N = dataset.shape[0] #10000
@@ -2956,7 +2952,7 @@ for n in range(N):
     total_reward += reward
 ```
 
-#### Visualize the results
+### Visualize the results
 ```python
 plt.hist(ads_selected)
 plt.title('Histogram of ads selection')
@@ -2964,4 +2960,9 @@ plt.xlabel('Ads')
 plt.ylabel('No of times each ads selected')
 plt.show()
 ```
+
+
+### Upper Confidence Bound vs Thompson Sampling
+
+<img src="./Reinforcement_Learning/Upper_Confidence_Bound_vs_Thompson_Sampling.png"/>
 
