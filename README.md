@@ -2966,3 +2966,125 @@ plt.show()
 
 <img src="./Reinforcement_Learning/Upper_Confidence_Bound_vs_Thompson_Sampling.png"/>
 
+<br/>
+<hr/>
+<br/>
+
+# Natural Language Processing
+
+<img src="./Natural_Language_Processing/Type_of_NLP.png"/>
+
+<img src="./Natural_Language_Processing/Examples.png"/>
+
+## Bag of Words
+According to google, native adult speakers of English understand an average of 20,000 to 30,000 vocabulary words.
+<img src="./Natural_Language_Processing/Google_Search.png"/>
+Let's assume we have an array/list of 20,000 size, we can put all the words at different index and hence we can make a difeerent 20,000 sized array for any statement in the world,
+
+$$ A = [0,0,0,0,0,0,0,0,...,0] \ \ \ \ i.e. \ \ \ 20000  \ \ sized \ \ array $$
+
+For below sentence this Array will look like
+<img src="./Natural_Language_Processing/Sample_Array.png"/>
+
+For simplicity, let's consider answering questions using NLP as Yes/No
+<img src="./Natural_Language_Processing/Sample_Questions_Answers.png"/>
+
+<img src="./Natural_Language_Processing/Bag_of_Words.png"/>
+
+### Importing modules and Datasets
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+dataset = pd.read_csv("./Datasets/Restaurant_Reviews.tsv", delimiter="\t", quoting=3) # quoting=3 ignore "
+print(dataset)
+```
+
+
+### Cleaning the Texts
+for cleaning the texts we need two more libraries
+- re: for regular expression 
+- nltk: Natural Language Tool Kit, for all the cleaning
+
+Cleaning of Texts means, removing all the words that are irrelevent for our purpose, for example the,a, of etc. are not needed for review analysis
+
+Steps for cleanng
+1. Downloading the stopwords using nltk
+2. Removing all the punctuations
+3. Convert in lowercase and split them in a list with delimeter as space
+4. Converting the tenses to present tense
+5. Join them by space
+6. Cleaning complete
+
+```python
+import re
+import nltk
+nltk.download("stopwords")
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
+N, m = dataset.shape
+corpus = []
+for i in range(N):
+    review = re.sub("[^a-zA-Z]", " ", dataset['Review'][i])
+    review = review.lower()
+    review = review.split()
+    ps = PorterStemmer()
+    all_stopwords = stopwords.words('english')
+    all_stopwords.remove("not")
+    review = [ps.stem(word) for word in review if word not in set(all_stopwords)]
+    review = ' '.join(review)
+    corpus.append(review)
+print(corpus)
+```
+
+### Making Bag of Words Model
+The above cleaning method has cleaned most of the things, but there are some more words that are irrelevent for analysis, to remove them we use CountVectorizer, this will take only the frequest words from all the words and create an array of size(N=20,000) for our analysis
+
+```python
+from sklearn.feature_extraction.text import CountVectorizer
+cv = CountVectorizer()
+X = cv.fit_transform(corpus).toarray()
+y = dataset.iloc[:,-1].values
+print(X)
+print(len(X),len(X[0]))
+print(y)
+print(len(y))
+```
+
+### Splitting dataset into train and test set
+```python
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+print(X_train)
+print(y_train)
+print(X_test)
+print(y_test)
+```
+
+### Training the Naive Bayes Classifier Model using Training Data
+```python
+from sklearn.naive_bayes import GaussianNB
+classifier = GaussianNB()
+classifier.fit(X_train,y_train)
+```
+
+### Predict Test results
+```python
+y_pred = classifier.predict(X_test)
+print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
+```
+
+### Making the Confusion Matrix
+```python
+from sklearn.metrics import confusion_matrix, accuracy_score
+cm = confusion_matrix(y_test,y_pred)
+print(cm)
+acs = accuracy_score(y_test,y_pred)
+print(acs)
+# Confusion Matrix
+# [
+#     [Correct-0,   Incorrect-1]
+#     [Incorrect-0, Correct-0]
+# ]
+```
