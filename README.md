@@ -3088,3 +3088,264 @@ print(acs)
 #     [Incorrect-0, Correct-0]
 # ]
 ```
+
+
+<br/>
+<hr/>
+<br/>
+
+# Deep Learning
+In this we try to mimic the human brain [neural network], Using some layers
+- Input Layer:Input
+- Hidden Layer: Process
+- Output Layer: Output
+
+<img src="./Deep_Learning/Deep_learning.png"/>
+
+## Artificial Neural Network [ ANN ]
+
+### The Neuron
+Below is the diagram of human neuron
+<img src="./Deep_Learning/Artificial_Neural_Network/Human_neuron.png"/>
+
+- Dendrites : Receiver of the Signals
+- Axon : Transmitter of the Signal
+- Neuron : Process the Signal
+
+Below is the actual image of Human Neurons
+<img src="./Deep_Learning/Artificial_Neural_Network/Human_neurons.png"/>
+
+Below is the diagram of Artificial Neuran
+<img src="./Deep_Learning/Artificial_Neural_Network/Artificial_neuron.png"/>
+
+From diagram we can say that there are three layers
+- Input Layer : For Input
+- Neuron : For Processing
+- Output Layer : For Output
+
+Now in Input Layer, we have two things
+- Input : The Input Signal, X<sub>1</sub>, X<sub>2</sub>
+- Weight : Importance of the input signal, w<sub>1</sub>, w<sub>2</sub>
+
+In Neuron, Following steps are performed
+1. Calculating Weighted Sum
+$$ R = \sum_{i=1}^{m} X_{i}*w_{i} $$
+
+2. Applying Activation Function
+$$ y = \phi (R) $$
+
+3. Pass the result to output Layer
+
+In output layer, we have output y, and y can be a
+- Continious Data (Price)
+- Binary Data (Yes/No)
+- Categorial Data (C<sub>1</sub>, C<sub>1</sub>)
+
+### The Activation Function
+1. Threshold Activation Function
+<img src="./Deep_Learning/Artificial_Neural_Network/Threshold_activation_function.png"/>
+
+2. Sigmoid Activation Function
+<img src="./Deep_Learning/Artificial_Neural_Network/Sigmoid_activation_function.png"/>
+
+3. Rectifier Activation Function
+<img src="./Deep_Learning/Artificial_Neural_Network/Rectifier_activation_function.png"/>
+
+4. Hyperbolic Tangent Activation Function
+<img src="./Deep_Learning/Artificial_Neural_Network/Hyperbolic_tangent_activation_function.png"/>
+
+Combination of Rectifier and Sigmoid Function
+<img src="./Deep_Learning/Artificial_Neural_Network/Rectifier_sigmoid_activation_function.png"/>
+
+
+### Working of Neural Networks
+Let's see an example of property price evaluation using NNs
+
+- Without Hidden Layer
+<img src="./Deep_Learning/Artificial_Neural_Network/Without_hidden_layer.png"/>
+
+- With Hidden Layer
+<img src="./Deep_Learning/Artificial_Neural_Network/With_hidden_layer.png"/>
+
+### Learning of Neural Networks
+y : Actual Value
+
+&ycirc; : Output Value
+
+<img src="./Deep_Learning/Artificial_Neural_Network/NN_learning.png"/>
+Steps
+
+1. First we put all the data in our NNs, and NN gives us some &ycirc;
+2. Next we calculate Cost
+$$ C = \frac{1}{2}(\hat{y}-y)^{2} $$
+3. Based on the value of C update w<sub>1</sub>, w<sub>2</sub>, and w<sub>3</sub>
+4. Repeat the above 3 steps, for minimum cost
+
+Example of NNs Learning
+<img src="./Deep_Learning/Artificial_Neural_Network/NN_learning_example.png"/>
+
+
+### Backpropagation [ Adjusting Weight ]
+
+#### Bruteforce Method
+
+We can select best weights using Brute Force
+<img src="./Deep_Learning/Artificial_Neural_Network/Adjusting_weight_brute_force.png"/>
+
+But problem in Bruteforce Method is **Curse of Dimensionality**, means for high dimension, calculation can take more than few billion years.
+
+
+To overcome this problem **Gradient Descent** is used
+
+#### Batch Gradient Descent
+
+<img src="./Deep_Learning/Artificial_Neural_Network/Adjusting_weight_gradient_descent.png"/>
+
+In Batch Graident Descent, we take all the data in every go, and update waight accordingly, this works only for convex type graph, but for a graph below one, we can have a problem of local minima
+<img src="./Deep_Learning/Artificial_Neural_Network/local_minima_problem.png"/>
+
+#### Stochastic Gradient Descent
+To overcome the problem of local minima, instead of batch processing, we take one row at a time, and after that we take the 2nd row, this is known as Stochastic Gradient Descent
+
+#### Batch Gradient Descent vs Stochastic Gradient Descent
+<img src="./Deep_Learning/Artificial_Neural_Network/Batch_vs_Stochastic_gradient_descent.png"/>
+
+### Training Artificial Neural Network
+<img src="./Deep_Learning/Artificial_Neural_Network/ANN_Training.png"/>
+
+
+### Importing the Libraries and Datasets
+```python
+import pandas as pd
+import numpy as np
+import tensorflow as tf
+
+dataset = pd.read_csv("./Datasets/Churn_Modelling.csv")
+X = dataset.iloc[:, 3:-1].values
+y = dataset.iloc[:, -1].values
+
+print(X)
+print(y)
+```
+
+### Encoding the Categorial Data
+```python
+# LabelEncoder for gender
+from sklean.preprocessing import LabelEncoder
+le = LabelEncoder()
+X[:, 2] = le.fit_transform(X[:, 2])
+
+# OneHotEncoding for geography
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+ct = ColumnTransformer(transformers=[('encode',OneHotEncoder(),[1])], remainder='passthrough')
+X = np.array(ct.fit_transform(X))
+
+print(X)
+```
+
+
+### Splitting dataset into train and test set
+```python
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+print(X_train)
+print(y_train)
+print(X_test)
+print(y_test)
+```
+
+### Feature Scaling
+```python
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+# fit and transform training data using the scaler
+X_train = sc.fit_transform(X_train)
+# transform test data using the same scaler
+X_test = sc.transform(X_test)
+```
+
+### Building the ANN
+```python
+# Initializing the ANN
+ann = tf.keras.models.Sequential()
+
+# Adding the Input and First Hidden Layer
+ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
+
+# Adding the Second Hidden Layer
+ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
+
+# Adding the Output Layer
+ann.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
+```
+
+### Training the ANN
+```python
+# Compiling the ANN
+ann.compile(optimizer = 'adam', loss='binary_crossentropy' , metrics = ['accuracy'])
+
+# Training the ANN on Training set
+ann.fit(X_train, y_train, batch_size=32, epochs=100)
+```
+
+### Predict for a single test
+Use our ANN model to predict if the customer with the following informations will leave the bank: 
+
+Credit Score: 600
+
+Geography: France
+
+Gender: Male
+
+Age: 40 years old
+
+Tenure: 3 years
+
+Balance: \$ 60000
+
+Number of Products: 2
+
+Does this customer have a credit card ? Yes
+
+Is this customer an Active Member: Yes
+
+Estimated Salary: \$ 50000
+
+So, should we say goodbye to that customer ?
+
+```python
+# 'france' => 1, 0, 0
+# 'Male' => 1
+tmp_dataset = [[1, 0, 0, 600, 1, 40, 3, 60000, 2, 1, 1, 50000]]
+
+prob = ann.predict(sc.transform(tmp_dataset))
+
+print(prob)
+
+if prob > 0.5:
+    print("Customer will leave the Bank")
+else:
+    print("Customer will not leave the Bank")
+```
+
+### Predicting for the Test Set
+```python
+y_pred_prob = ann.predict(X_test)
+y_pred = (y_pred_prob > 0.5)
+print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
+```
+
+### Making the Confusion Matrix
+```python
+from sklearn.metrics import confusion_matrix, accuracy_score
+cm = confusion_matrix(y_test,y_pred)
+print(cm)
+acs = accuracy_score(y_test,y_pred)
+print(acs)
+# Confusion Matrix
+# [
+#     [Correct-0,   Incorrect-1]
+#     [Incorrect-0, Correct-0]
+# ]
+```
