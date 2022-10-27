@@ -3349,3 +3349,363 @@ print(acs)
 #     [Incorrect-0, Correct-0]
 # ]
 ```
+
+## Convolution Neural Network [ CNN ]
+In the below images
+
+<hr/>
+
+- Image with two Faces 
+
+<img src="./Deep_Learning/Convolution_Neural_Network/Man_with_two_faces.png"/>
+
+    1. Man loooking to the right
+    2. Man looking at you
+
+<hr/>
+
+- Lady with two Faces 
+
+<img src="./Deep_Learning/Convolution_Neural_Network/Lady_with_two_ages.png"/>
+
+    1. Girl loooking away
+    2. Old lady looking down
+
+<hr/>
+
+- Duck or the Rabit 
+
+<img src="./Deep_Learning/Convolution_Neural_Network/Duck_or_the_rabit.png"/>
+
+    1. Duck
+    2. Rabit
+
+<hr/>
+
+- Image with Moving Face 
+
+<img src="./Deep_Learning/Convolution_Neural_Network/Image_with_moving_face.png"/>
+
+    1. Upper one is actual Face
+    2. Lower one is actual Face
+
+<hr/>
+
+The above images can looki like 1<sup>st</sup> or the 2<sup>nd</sup>, based on the features on which we are focusing.
+
+<hr/>
+
+
+
+How CNN Works?
+
+<img src="./Deep_Learning/Convolution_Neural_Network/CNN_processing.png"/>
+
+CNN Examples
+
+<img src="./Deep_Learning/Convolution_Neural_Network/CNN_example.png"/>
+
+How a computer looks on an image?
+
+<img src="./Deep_Learning/Convolution_Neural_Network/Image_for_computer.png"/>
+
+Steps of CNN
+
+1. Convolution: Detecting the features
+
+    Function for convolution
+    $$ (f*g) \overset{\underset{\mathrm{def}}{}}{=} \int_{-\infty}^{\infty} f(\tau) g(t-\tau)d\tau $$
+
+    In graphical view
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/CNN_step_1.png"/>
+
+    This can be understood with the below diagram
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/CNN_step_1_explored.png"/>
+
+    Some common filters
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Sharpen_filter.png"/>
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Blur_filter.png"/>
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Edge_enhance_filter.png"/>
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Edge_detect_filter.png"/>
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Emboss_filter.png"/>
+
+    When we apply convolution, we loose some of the patterns of the image, features become linear, so to remove this linearity and imporove our feature/pattern, we apply the rectifier function, **ReLU Layer**
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/ReLU_Layer.png"/>
+
+    Example,
+
+    Original Image
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Original_image.png"/>
+
+    Image after applying convolution
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Convolution_applied_image.png"/>
+
+    Now after ReLU Layer
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/ReLU_convolution_applied_image.png"/>
+
+
+2. Max Pooling : Our object can have different rotation/position/texture in the image, for example
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Rotated_images.png"/>
+
+    Or, below ones
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Different_images.png"/>
+
+    
+    In Max Pooling, we take a NxN part of the matrix, N can be 2, 3, ... etc. and Now we select the max value of that portion, and we take from left_top to bottom_right, and get a max pooled data.
+
+    Applying Max Pooling to the data after Convolution
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Max_pooling_process.png"/>
+
+    This will inhance the features, and hence enables to detect object in any rotation, position. Also, this reduces the size of data, hence improve processing.
+
+    There are some other poolings
+    1. Sum Pooling
+    2. Average Pooling, etc.
+
+    Below is the different layers of Number 4
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Detect_number_4.png"/>
+
+
+3. Flattening : Means converting the matrix data into one column [ dimension ]
+
+    Below is the process of flattening
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Flattening_process.png"/>
+
+    Getting Input Layer
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Convolution_Input_layer.png"/>
+
+4. Full Connection: It is the step after flattening the data (getting the input layer)
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Full_connection_process.png"/>
+
+    Detect Cat and Dog
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Detect_cat_dog.png"/>
+
+    In Backpropagation, hidden layers and the feature detection matrix bot gets modified.
+
+    Detect Dog
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Detect_dog.png"/>
+
+    Detect Cat
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Detect_cat.png"/>
+
+    Detection Examples
+
+    <img src="./Deep_Learning/Convolution_Neural_Network/Detection_examples.png"/>
+
+### Complete CNN Process
+
+<img src="./Deep_Learning/Convolution_Neural_Network/Complete_CNN.png"/>
+
+### Softmax
+Output of neurons is basically a real number, now to convert them to probability, **Softmax function** is applied.
+
+$$  f_{j}(z) = \frac{e^{z_{j}}}{\sum_{k}^{} e^{z_{k}}} $$
+
+### Cross Entropy
+
+Cost Function are used to evaluate the Neural Network Accuracy/Error, in ANN we used Mean Squared Error Method to calculate the cost
+$$ C = \frac{1}{2} (\hat{y}-y)^{2} $$
+
+Cross Entropy is also a cost function and it is better in case of classification, for regression MSE is better.
+
+Function for Cross Entropy
+$$ L_{i} = -\log\left ( \frac{e^{f_{y_{i}}}}{\sum_{j}^{} e^{f_{j}}} \right ) $$
+
+Simplified Cross Entropy Function
+$$ H(p,q) = \sum_{x}^{} p(x) \log q(x) $$
+
+Example of Applying Cross Enropy
+
+<img src="./Deep_Learning/Convolution_Neural_Network/Cross_entropy_example.png"/>
+
+Let's suppose two neural networks NN1 and NN2, below is the predictions of cat dog detection using NN1 and NN2
+
+<img src="./Deep_Learning/Convolution_Neural_Network/NN1_NN2.png"/>
+
+Now let's compare them
+
+<img src="./Deep_Learning/Convolution_Neural_Network/NN1_vs_NN2.png"/>
+
+
+### Importing the Libraries
+```python
+import tensorflow as tf
+from keras.preprocessing.image import ImageDataGenerator
+```
+
+### Data Preprocessing [ Image Augmentation ]
+```python
+# Preprocessing the Training set
+train_datagen = ImageDataGenerator(
+    rescale = 1./255,
+    shear_range = 0.2,
+    zoom_range = 0.2,
+    horizontal_flip = True
+)
+
+training_set = train_datagen.flow_from_directory(
+    './Datasets/dataset/training_set/',
+    target_size = (64, 64),
+    batch_size = 32,
+    class_mode = 'binary'
+)
+
+# Preprocessing the Test set
+test_datagen = ImageDataGenerator(rescale = 1./255)
+
+test_set = train_datagen.flow_from_directory(
+    './Datasets/dataset/test_set/',
+    target_size = (64, 64),
+    batch_size = 32,
+    class_mode = 'binary'
+)
+```
+
+### Building the CNN
+```python
+# Initialising the CNN
+cnn = tf.keras.models.Sequential()
+
+# Step-1 Convolution
+cnn.add(
+    tf.keras.layers.Conv2D(
+        filters = 32,
+        kernel_size = 3,
+        activation = 'relu',
+        input_shape = [64,64,3]
+        )
+    )
+
+# Step-2 Pooling
+cnn.add(
+    tf.keras.layers.MaxPool2D(
+        pool_size = 2,
+        strides = 2
+        )
+    )
+
+# Step-3 Adding one more Convolution Layer and Pooling
+cnn.add(
+    tf.keras.layers.Conv2D(
+        filters = 32,
+        kernel_size = 3,
+        activation = 'relu'
+        )
+    )
+
+cnn.add(
+    tf.keras.layers.MaxPool2D(
+        pool_size = 2,
+        strides = 2
+        )
+    )
+
+# Step-4 Flattening
+cnn.add(tf.keras.layers.Flatten())
+
+# Step-5 Full Connection
+cnn.add(
+    tf.keras.layers.Dense(
+        units = 128,
+        activation = 'relu',
+    )
+)
+
+# Step-6 Output Layer
+cnn.add(
+    tf.keras.layers.Dense(
+        units = 1,
+        activation = 'sigmoid',
+    )
+)
+```
+
+### Training the CNN
+```python
+# Compiling the CNN
+cnn.compile(
+    optimizer = 'adam',
+    loss = 'binary_crossentropy',
+    metrics = ['accuracy']
+    )
+
+# Training the CNN on Training set and Evaluating on Test set
+cnn.fit(
+    x = training_set,
+    validation_data = test_set,
+    epochs = 25
+    )
+```
+
+### Making a single prediction
+```python
+import numpy as np
+from tensorflow.keras.utils import load_img, img_to_array 
+
+test_image = load_img(
+    'Datasets/dataset/single_prediction/cat_or_dog_1.jpg',
+    target_size = (64, 64)
+)
+
+test_image = img_to_array(test_image)
+
+test_image = np.expand_dims(test_image, axis = 0)
+
+result = cnn.predict(test_image)
+
+training_set.class_indices 
+
+if result[0][0] == 1:
+    prediction = 'Dog'
+else:
+    prediction = 'Cat'
+    
+print("Input Image contains a", prediction)
+```
+
+### Making one more prediction
+```python
+import numpy as np
+from tensorflow.keras.utils import load_img, img_to_array 
+
+test_image = load_img(
+    'Datasets/dataset/single_prediction/cat_or_dog_2.jpg',
+    target_size = (64, 64)
+)
+
+test_image = img_to_array(test_image)
+
+test_image = np.expand_dims(test_image, axis = 0)
+
+result = cnn.predict(test_image)
+
+training_set.class_indices 
+
+if result[0][0] == 1:
+    prediction = 'Dog'
+else:
+    prediction = 'Cat'
+    
+print("Input Image contains a", prediction)
+```
