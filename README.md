@@ -3875,9 +3875,9 @@ Steps for LDA
 
 1. Compute the d-dimensional mean vectors for the different classes from the dataset.
 2. Compute the scatter matrices (in-between-class and within-class scatter matrix).
-3. Compute the eignvectors ($ e_{1},\  e_{2},\  ...,\  e_{n}$) and corresponding eignvalues ($ \lambda_{1},\  \lambda_{2},\  ...,\  \lambda_{n}$) for the scatter matrices.
-4. Sort the eignvectors by decreasing eignvalues and choose k eignvectors with the largest eignvalues to form a $ d \times k $ dimensional matrix $W$ (where every column represtents an eignvector).
-5. Use the $ d \times k $ eignvector matrix to transform the samples onto the new subspace. This can be summarized by the matrix multiplication: $ Y = X \times Y $ (where $X$ is a $ n \times d $ dimensional matrix representing the n samples, and y are the transformed $ n \times k $ dimensional samples in the new subspace).
+3. Compute the eignvectors ( e<sub>1</sub> e<sub>2</sub> ..., e<sub>n</sub> ) and corresponding eignvalues ( &Lambda;<sub>1</sub> &Lambda;<sub>2</sub> ..., &Lambda;<sub>n</sub> ) for the scatter matrices.
+4. Sort the eignvectors by decreasing eignvalues and choose k eignvectors with the largest eignvalues to form a d*k dimensional matrix W (where every column represtents an eignvector).
+5. Use the d*k eignvector matrix to transform the samples onto the new subspace. This can be summarized by the matrix multiplication: Y = X*Y (where X is a n*d  dimensional matrix representing the n samples, and y are the transformed n*k dimensional samples in the new subspace).
 
 
 
