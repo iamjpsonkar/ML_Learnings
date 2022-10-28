@@ -3525,14 +3525,17 @@ $$  f_{j}(z) = \frac{e^{z_{j}}}{\sum_{k}^{} e^{z_{k}}} $$
 ### Cross Entropy
 
 Cost Function are used to evaluate the Neural Network Accuracy/Error, in ANN we used Mean Squared Error Method to calculate the cost
+
 $$ C = \frac{1}{2} (\hat{y}-y)^{2} $$
 
 Cross Entropy is also a cost function and it is better in case of classification, for regression MSE is better.
 
 Function for Cross Entropy
+
 $$ L_{i} = -\log\left ( \frac{e^{f_{y_{i}}}}{\sum_{j}^{} e^{f_{j}}} \right ) $$
 
 Simplified Cross Entropy Function
+
 $$ H(p,q) = \sum_{x}^{} p(x) \log q(x) $$
 
 Example of Applying Cross Enropy
