@@ -3857,3 +3857,143 @@ plt.ylabel('PC2')
 plt.legend()
 plt.show()
 ```
+
+## Linear Discriminant Analysis [ LDA ]
+It is a supervsed learning dimension reduction algorithm as it's relation to the dependent variable.
+
+**Reduce the dimensions of a d-dimension dataset by projecting it on a k-dimensional subspace, where $ k < d $ and also maintaining the class-discriminatory information.** 
+
+Usages
+
+- Used as a dimensionality reduction technique
+- Used in preprocessing step for pattern classification
+- Has a goal to project a dataset onto a lower dimension space
+
+LDA is different than PCA, because in addition to finding the component axes with LDA, we are also intrested in the axes that maximize the seperation between multiple classes.
+
+Steps for LDA
+
+1. Compute the d-dimensional mean vectors for the different classes from the dataset.
+2. Compute the scatter matrices (in-between-class and within-class scatter matrix).
+3. Compute the eignvectors ($ e_{1},\  e_{2},\  ...,\  e_{n}$) and corresponding eignvalues ($ \lambda_{1},\  \lambda_{2},\  ...,\  \lambda_{n}$) for the scatter matrices.
+4. Sort the eignvectors by decreasing eignvalues and choose k eignvectors with the largest eignvalues to form a $ d \times k $ dimensional matrix $W$ (where every column represtents an eignvector).
+5. Use the $ d \times k $ eignvector matrix to transform the samples onto the new subspace. This can be summarized by the matrix multiplication: $ Y = X \times Y $ (where $X$ is a $ n \times d $ dimensional matrix representing the n samples, and y are the transformed $ n \times k $ dimensional samples in the new subspace).
+
+
+
+### PCA vs LDA
+<img src="./Dimensionality_Reduction/PCA_vs_LDA.png">
+
+
+### Importing the Libraries and Dataset
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+dataset = pd.read_csv("./Datasets/Wine.csv")
+X = dataset.iloc[:,:-1].values
+y = dataset.iloc[:,-1].values
+
+print(X)
+print(y)
+```
+
+### Splitting dataset into train and test set
+```python
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+print(X_train)
+print(y_train)
+print(X_test)
+print(y_test)
+```
+
+### Feature Scaling
+```python
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+# fit using training data
+sc.fit(X_train)
+# transform training data using the scaler
+X_train = sc.transform(X_train)
+# transform test data using the same scaler
+X_test = sc.transform(X_test)
+```
+
+
+### Applying LDA
+```python
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+lda = LDA(n_components = 2)
+X_train = lda.fit_transform(X_train, y_train)
+X_test = lda.transform(X_test)
+```
+
+### Training the Logistic Regression Model using Training 
+```python
+from sklearn.linear_model import LogisticRegression
+classifier = LogisticRegression(random_state = 0)
+classifier.fit(X_train,y_train)
+```
+
+### Predict Test results
+```python
+y_pred = classifier.predict(X_test)
+print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
+```
+
+### Making the Confusion Matrix
+```python
+from sklearn.metrics import confusion_matrix, accuracy_score
+cm = confusion_matrix(y_test,y_pred)
+print(cm)
+acs = accuracy_score(y_test,y_pred)
+print(acs)
+# Confusion Matrix
+# [
+#     [Customer-0,   Customer-1, Customer-2] => [Correct,Incorrect,Incorrect]
+#     [Customer-0,   Customer-1, Customer-2] => [Incorrect,Correct,Incorrect]
+#     [Customer-0,   Customer-1, Customer-2] => [Incorrect,Incorrect,Correct]
+# ]
+```
+
+### Visualising the Training set results
+```python
+from matplotlib.colors import ListedColormap
+X_set, y_set = X_train, y_train
+X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
+                     np.arange(start = X_set[:, 1].min() - 1, stop = X_set[:, 1].max() + 1, step = 0.01))
+plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
+             alpha = 0.75, cmap = ListedColormap(('red', 'green', 'blue')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
+                c = ListedColormap(('red', 'green', 'blue'))(i), label = j)
+plt.title('Logistic Regression (Training set)')
+plt.xlabel('LD1')
+plt.ylabel('LD2')
+plt.legend()
+plt.show()
+```
+
+### Visualising the Test set results
+```python
+from matplotlib.colors import ListedColormap
+X_set, y_set = X_test, y_test
+X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
+                     np.arange(start = X_set[:, 1].min() - 1, stop = X_set[:, 1].max() + 1, step = 0.01))
+plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
+             alpha = 0.75, cmap = ListedColormap(('red', 'green', 'blue')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
+                c = ListedColormap(('red', 'green', 'blue'))(i), label = j)
+plt.title('Logistic Regression (Test set)')
+plt.xlabel('LD1')
+plt.ylabel('LD2')
+plt.legend()
+plt.show()
+```
