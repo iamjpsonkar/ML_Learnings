@@ -3997,3 +3997,118 @@ plt.ylabel('LD2')
 plt.legend()
 plt.show()
 ```
+
+## Kernel PCA (KPCA)
+
+### Importing the Libraries and Dataset
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+dataset = pd.read_csv("./Datasets/Wine.csv")
+X = dataset.iloc[:,:-1].values
+y = dataset.iloc[:,-1].values
+
+print(X)
+print(y)
+```
+
+### Splitting dataset into train and test set
+```python
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+print(X_train)
+print(y_train)
+print(X_test)
+print(y_test)
+```
+
+### Feature Scaling
+```python
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+# fit using training data
+sc.fit(X_train)
+# transform training data using the scaler
+X_train = sc.transform(X_train)
+# transform test data using the same scaler
+X_test = sc.transform(X_test)
+```
+
+
+### Applying KPCA
+```python
+from sklearn.decomposition import KernelPCA
+kpca = KernelPCA(n_components = 2, kernel = 'rbf')
+X_train = kpca.fit_transform(X_train)
+X_test = kpca.transform(X_test)
+```
+
+### Training the Logistic Regression Model using Training 
+```python
+from sklearn.linear_model import LogisticRegression
+classifier = LogisticRegression(random_state = 0)
+classifier.fit(X_train,y_train)
+```
+
+### Predict Test results
+```python
+y_pred = classifier.predict(X_test)
+print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
+```
+
+### Making the Confusion Matrix
+```python
+from sklearn.metrics import confusion_matrix, accuracy_score
+cm = confusion_matrix(y_test,y_pred)
+print(cm)
+acs = accuracy_score(y_test,y_pred)
+print(acs)
+# Confusion Matrix
+# [
+#     [Customer-0,   Customer-1, Customer-2] => [Correct,Incorrect,Incorrect]
+#     [Customer-0,   Customer-1, Customer-2] => [Incorrect,Correct,Incorrect]
+#     [Customer-0,   Customer-1, Customer-2] => [Incorrect,Incorrect,Correct]
+# ]
+```
+
+### Visualising the Training set results
+```python
+from matplotlib.colors import ListedColormap
+X_set, y_set = X_train, y_train
+X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
+                     np.arange(start = X_set[:, 1].min() - 1, stop = X_set[:, 1].max() + 1, step = 0.01))
+plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
+             alpha = 0.75, cmap = ListedColormap(('red', 'green', 'blue')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
+                c = ListedColormap(('red', 'green', 'blue'))(i), label = j)
+plt.title('Logistic Regression (Training set)')
+plt.xlabel('KPC1')
+plt.ylabel('KPC2')
+plt.legend()
+plt.show()
+```
+
+### Visualising the Test set results
+```python
+from matplotlib.colors import ListedColormap
+X_set, y_set = X_test, y_test
+X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
+                     np.arange(start = X_set[:, 1].min() - 1, stop = X_set[:, 1].max() + 1, step = 0.01))
+plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
+             alpha = 0.75, cmap = ListedColormap(('red', 'green', 'blue')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
+                c = ListedColormap(('red', 'green', 'blue'))(i), label = j)
+plt.title('Logistic Regression (Test set)')
+plt.xlabel('KPC1')
+plt.ylabel('KPC2')
+plt.legend()
+plt.show()
+```
