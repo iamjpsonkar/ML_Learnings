@@ -3532,7 +3532,7 @@ Cross Entropy is also a cost function and it is better in case of classification
 
 Function for Cross Entropy
 
-$$ L_{i} = -\log\left ( \frac{e^{f_{y_{i}}}}{\sum_{j}^{} e^{f_{j}}} \right ) $$
+$$ L_{i} = -\log \left ( \frac {e^{f_{y_{i}}}}{\sum_{j}^{ }e^{f_{j}}} \right ) $$
 
 Simplified Cross Entropy Function
 
