@@ -3861,7 +3861,7 @@ plt.show()
 ## Linear Discriminant Analysis [ LDA ]
 It is a supervsed learning dimension reduction algorithm as it's relation to the dependent variable.
 
-**Reduce the dimensions of a d-dimension dataset by projecting it on a k-dimensional subspace, where $ k < d $ and also maintaining the class-discriminatory information.** 
+**Reduce the dimensions of a d-dimension dataset by projecting it on a k-dimensional subspace, where k < d  and also maintaining the class-discriminatory information.** 
 
 Usages
 
