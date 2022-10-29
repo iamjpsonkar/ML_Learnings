@@ -1,0 +1,7 @@
+{
+    "files.autoSave": "onFocusChange",
+    "editor.fontSize": 16,
+    "editor.bracketPairColorization.independentColorPoolPerBracketType": false,
+    "editor.scrollbar.scrollByPage": true,
+    "notebook.output.textLineLimit": 100
+}
