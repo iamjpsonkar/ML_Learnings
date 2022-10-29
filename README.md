@@ -4454,3 +4454,115 @@ plt.legend()
 plt.show()
 ```
 
+
+# XGBoost Model
+
+
+### Loading and Preprocession Data
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+dataset = pd.read_csv('../Datasets/Classification/Kernel_SVM/Social_Network_Ads.csv')
+# print(dataset)
+
+X = dataset.iloc[:,:-1].values
+y = dataset.iloc[:,-1].values
+
+
+# # Taking care of Missing values
+# from sklearn.impute import SimpleImputer 
+# imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+# imputer.fit(X[:,:-1])
+# X[:,:-1] =  imputer.transform(X[:,:-1])
+# imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+# imputer.fit(X[:,-2:-1])
+# X[:,-2:-1] =  imputer.transform(X[:,-2:-1])
+# # print(X)
+
+# # Encoding categorial Data [One Hot Encoding]
+# from sklearn.compose import ColumnTransformer
+# from sklearn.preprocessing import OneHotEncoder
+# ct = ColumnTransformer(transformers=[('encode',OneHotEncoder(),[-1])], remainder='passthrough')
+# X = np.array(ct.fit_transform(X))
+# # print(X)
+
+
+# LabelEncoder for y
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+y = le.fit_transform(y)
+print(y)
+
+
+# Splitting dataset into train and test set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+print(X_train)
+print(y_train)
+print(X_test)
+print(y_test)
+```
+
+
+### Feature Scaling
+
+```python
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+# fit using training data
+sc.fit(X_train)
+# transform training data using the scaler
+X_train = sc.transform(X_train)
+# transform test data using the same scaler
+X_test = sc.transform(X_test)
+```
+
+
+### Training the XGBoost Model using Training Data
+
+```python
+from xgboost import XGBClassifier
+classifier = XGBClassifier()
+classifier.fit(X_train,y_train)
+```
+
+### Predict Test results
+
+```python
+y_pred = classifier.predict(X_test)
+print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),axis=1))
+```
+
+### Making the Confusion Matrix
+
+```python
+from sklearn.metrics import confusion_matrix, accuracy_score
+cm = confusion_matrix(y_test,y_pred)
+print(cm)
+acs = accuracy_score(y_test,y_pred)
+print(acs)
+# Confusion Matrix
+# [
+#     [Correct-0,   Incorrect-1]
+#     [Incorrect-0, Correct-0]
+# ]
+```
+
+### Applying K-Fold Cross Validation
+```python
+from sklearn.model_selection import cross_val_score
+
+accuracies = cross_val_score(
+    estimator=classifier,
+    X=X_train,
+    y=y_train,
+    cv=10
+)
+
+print("Accuracy : {:.2f} %".format(accuracies.mean()*100))
+
+print("Standard Deviation : {:.2f} %".format(accuracies.std()*100))
+```
